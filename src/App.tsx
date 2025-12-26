@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { ScriptsPage } from './components/ScriptsPage';
+import { scriptLibrary, type ScriptCard } from './scripts/library';
 
 type AppCard = {
   id: string;
   title: string;
   description: string;
-  url: string;
+  url?: string;
+  type?: 'web' | 'scripts';
+  scripts?: ScriptCard[];
 };
 
 const apps: AppCard[] = [
@@ -13,30 +17,15 @@ const apps: AppCard[] = [
     title: 'Blank Page',
     description: 'Open a clean writing surface in the sidebar.',
     url: 'https://blank.page/',
+    type: 'web',
   },
+  
   {
-    id: 'notes',
-    title: 'Notes (coming soon)',
-    description: 'Draft notes and todos in-place. (Preview)',
-    url: 'https://blank.page/',
-  },
-  {
-    id: 'links',
-    title: 'Links Hub (coming soon)',
-    description: 'Save quick links and switch fast. (Preview)',
-    url: 'https://blank.page/',
-  },
-  {
-    id: 'ai',
-    title: 'AI Assist (coming soon)',
-    description: 'Summaries and quick answers. (Preview)',
-    url: 'https://blank.page/',
-  },
-  {
-    id: 'colab',
-    title: 'Google Colab',
-    description: 'Run notebooks in the sidebar (may require sign-in).',
-    url: 'https://colab.research.google.com/',
+    id: 'scripts',
+    title: 'My Scripts',
+    description: 'Quick tools like Email Extractor.',
+    type: 'scripts',
+    scripts: scriptLibrary,
   },
 ];
 
@@ -44,10 +33,11 @@ function App() {
   const [selected, setSelected] = useState<AppCard | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleSelect = (app: AppCard) => {
     setSelected(app);
-    setIsLoading(true);
+    setIsLoading(app.type === 'scripts' ? false : true);
     setError(null);
   };
 
@@ -65,6 +55,16 @@ function App() {
   const handleIframeError = () => {
     setIsLoading(false);
     setError('Failed to load website. The site may not allow embedding.');
+  };
+
+  const copyScript = async (script: ScriptCard) => {
+    try {
+      await navigator.clipboard.writeText(script.code.trim());
+      setCopiedId(script.id);
+      setTimeout(() => setCopiedId(null), 1500);
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
   };
 
   return (
@@ -127,9 +127,12 @@ function App() {
                     </div>
                     <span
                       className="text-xxs px-2 py-1 rounded-full"
-                      style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : '#505050', color: '#0f172a' }}
+                      style={{
+                        backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#505050',
+                        color: '#0f172a',
+                      }}
                     >
-                      {app.id === 'blank' ? 'Live' : 'Preview'}
+                      {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Preview'}
                     </span>
                   </div>
                   <p className="text-xs mb-3" style={{ color: '#c2c2c2' }}>
@@ -137,7 +140,7 @@ function App() {
                   </p>
                   <div
                     className="h-1 rounded-full"
-                    style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : '#4f4f4f' }}
+                    style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#4f4f4f' }}
                   ></div>
                 </button>
               ))}
@@ -147,58 +150,64 @@ function App() {
 
         {selected && (
           <>
-            {isLoading && (
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ backgroundColor: '#303030' }}
-              >
-                <div className="text-center">
-                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gray-600 border-r-transparent mb-3"></div>
-                  <p className="text-sm" style={{ color: '#c2c2c2' }}>
-                    Loading {selected.title}...
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {error && (
-              <div
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ backgroundColor: '#303030' }}
-              >
-                <div className="text-center max-w-md px-4">
-                  <div className="mb-3" style={{ color: '#f87171' }}>
-                    <svg
-                      className="w-12 h-12 mx-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
+            {selected.type === 'scripts' ? (
+              <ScriptsPage scripts={selected.scripts ?? []} copiedId={copiedId} onCopy={copyScript} />
+            ) : (
+              <>
+                {isLoading && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ backgroundColor: '#303030' }}
+                  >
+                    <div className="text-center">
+                      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gray-600 border-r-transparent mb-3"></div>
+                      <p className="text-sm" style={{ color: '#c2c2c2' }}>
+                        Loading {selected.title}...
+                      </p>
+                    </div>
                   </div>
-                  <h2 className="text-lg font-semibold mb-2" style={{ color: '#f4f4f4' }}>
-                    Unable to Load {selected.title}
-                  </h2>
-                  <p className="text-sm" style={{ color: '#c2c2c2' }}>{error}</p>
-                </div>
-              </div>
-            )}
+                )}
 
-            <iframe
-              key={selected.id}
-              src={selected.url}
-              title={selected.title}
-              className="w-full h-full border-0"
-              onLoad={handleIframeLoad}
-              onError={handleIframeError}
-              allow="microphone *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
-            />
+                {error && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ backgroundColor: '#303030' }}
+                  >
+                    <div className="text-center max-w-md px-4">
+                      <div className="mb-3" style={{ color: '#f87171' }}>
+                        <svg
+                          className="w-12 h-12 mx-auto"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          />
+                        </svg>
+                      </div>
+                      <h2 className="text-lg font-semibold mb-2" style={{ color: '#f4f4f4' }}>
+                        Unable to Load {selected.title}
+                      </h2>
+                      <p className="text-sm" style={{ color: '#c2c2c2' }}>{error}</p>
+                    </div>
+                  </div>
+                )}
+
+                <iframe
+                  key={selected.id}
+                  src={selected.url}
+                  title={selected.title}
+                  className="w-full h-full border-0"
+                  onLoad={handleIframeLoad}
+                  onError={handleIframeError}
+                  allow="microphone *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
+                />
+              </>
+            )}
           </>
         )}
       </main>

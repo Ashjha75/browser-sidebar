@@ -51,7 +51,7 @@ function App() {
         style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
       >
         <h1 className="text-sm font-medium" style={{ color: '#f4f4f4' }}>
-          {selected ? selected.title : 'Choose an experience'}
+          {selected ? selected.title : 'My Sidebar'}
         </h1>
         <div className="flex items-center gap-3">
           {selected && (

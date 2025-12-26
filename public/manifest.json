@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Website Sidebar",
+  "name": "My Sidebar",
   "version": "1.0.0",
   "description": "Renders external websites in Chrome's side panel with a dark-themed interface",
   "icons": {
@@ -9,7 +9,7 @@
     "128": "icon128.svg"
   },
   "action": {
-    "default_title": "Open Website Sidebar"
+    "default_title": "Open My Sidebar"
   },
   "side_panel": {
     "default_path": "index.html"

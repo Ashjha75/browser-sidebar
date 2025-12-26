@@ -68,6 +68,37 @@ function App() {
     }
   };
 
+  const handleRunScript = async (script: ScriptCard) => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab?.id) return;
+
+      let code = script.code.trim();
+      if (code.startsWith('javascript:')) {
+        code = code.substring(11);
+        try {
+          code = decodeURIComponent(code);
+        } catch {
+          // ignore
+        }
+      }
+
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: (codeToRun) => {
+          const script = document.createElement('script');
+          script.textContent = codeToRun;
+          (document.head || document.documentElement).appendChild(script);
+          script.remove();
+        },
+        args: [code],
+        world: 'MAIN',
+      });
+    } catch (err) {
+      console.error('Script execution failed', err);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full w-full" style={{ backgroundColor: '#303030' }}>
       {/* Header */}
@@ -143,7 +174,12 @@ function App() {
         {selected && (
           <>
             {selected.type === 'scripts' ? (
-              <ScriptsPage scripts={selected.scripts ?? []} copiedId={copiedId} onCopy={copyScript} />
+              <ScriptsPage
+                scripts={selected.scripts ?? []}
+                copiedId={copiedId}
+                onCopy={copyScript}
+                onRun={handleRunScript}
+              />
             ) : (
               <>
                 {isLoading && (

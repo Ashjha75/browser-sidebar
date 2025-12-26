@@ -29,7 +29,9 @@
     "storage",
     "clipboardRead",
     "clipboardWrite",
-    "audioCapture"
+    "audioCapture",
+    "scripting",
+    "activeTab"
   ],
   "host_permissions": [
     "https://blank.page/*",

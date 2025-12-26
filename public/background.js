@@ -1,17 +1,6 @@
 // Background Service Worker for Chrome Extension
 // Handles privileged operations and API calls
 
-// Open welcome page on first install
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason.search(/install/g) === -1) {
-    return;
-  }
-  chrome.tabs.create({
-    url: chrome.runtime.getURL("welcome.html"),
-    active: true
-  });
-});
-
 chrome.action.onClicked.addListener((tab) => {
   // Open side panel when extension icon is clicked
   chrome.sidePanel.open({ windowId: tab.windowId });

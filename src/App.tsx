@@ -81,7 +81,7 @@ function App() {
           className="w-full h-full border-0"
           onLoad={handleIframeLoad}
           onError={handleIframeError}
-          allow="microphone *; camera *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
+          allow="microphone *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
         />
       </main>
     </div>

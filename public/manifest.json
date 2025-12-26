@@ -24,8 +24,7 @@
     "storage",
     "clipboardRead",
     "clipboardWrite",
-    "audioCapture",
-    "videoCapture"
+    "audioCapture"
   ],
   "host_permissions": [
     "https://blank.page/*",

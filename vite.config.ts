@@ -3,18 +3,20 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { copyFileSync, mkdirSync } from 'fs';
 
-export default defineConfig({
-  base: '/browser-sidebar/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/browser-sidebar/' : '/',
   plugins: [
     react(),
     {
       name: 'copy-extension-files',
       closeBundle() {
-        // Copy manifest and background script to dist
-        mkdirSync('dist', { recursive: true });
-        copyFileSync('public/manifest.json', 'dist/manifest.json');
-        copyFileSync('public/background.js', 'dist/background.js');
-        copyFileSync('public/logo.png', 'dist/logo.png');
+        // Only copy extension files in development mode
+        if (mode !== 'production') {
+          mkdirSync('dist', { recursive: true });
+          copyFileSync('public/manifest.json', 'dist/manifest.json');
+          copyFileSync('public/background.js', 'dist/background.js');
+          copyFileSync('public/logo.png', 'dist/logo.png');
+        }
       }
     }
   ],
@@ -39,4 +41,4 @@ export default defineConfig({
     port: 3000,
     strictPort: false,
   }
-});
+}));

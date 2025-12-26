@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { copyFileSync, mkdirSync } from 'fs';
 
 export default defineConfig({
+  base: '/browser-sidebar/',
   plugins: [
     react(),
     {
@@ -20,13 +21,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-      },
       output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
     // Disable code splitting for extension compatibility

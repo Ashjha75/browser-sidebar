@@ -26,12 +26,27 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-900">
+    <div className="flex flex-col h-full w-full" style={{ backgroundColor: '#303030' }}>
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 bg-gray-800 border-b border-gray-700">
-        <h1 className="text-sm font-medium text-gray-100">Website Sidebar</h1>
-        <div className="text-xs text-gray-400">
-          {isLoading ? 'Loading...' : 'Ready'}
+      <header
+        className="flex items-center justify-between px-4 py-3 border-b"
+        style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
+      >
+        <h1 className="text-sm font-medium" style={{ color: '#f4f4f4' }}>
+          Website Sidebar
+        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            aria-label="Close"
+            onClick={() => window.close()}
+            className="w-8 h-8 flex items-center justify-center rounded-md"
+            style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
+          >
+            ×
+          </button>
+          <div className="text-xs" style={{ color: '#b5b5b5' }}>
+            {isLoading ? 'Loading...' : 'Ready'}
+          </div>
         </div>
       </header>
 
@@ -39,19 +54,27 @@ function App() {
       <main className="flex-1 relative overflow-hidden">
         {/* Loading State */}
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ backgroundColor: '#303030' }}
+          >
             <div className="text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gray-600 border-r-transparent mb-3"></div>
-              <p className="text-sm text-gray-400">Loading website...</p>
+              <p className="text-sm" style={{ color: '#c2c2c2' }}>
+                Loading website...
+              </p>
             </div>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ backgroundColor: '#303030' }}
+          >
             <div className="text-center max-w-md px-4">
-              <div className="mb-3 text-red-400">
+              <div className="mb-3" style={{ color: '#f87171' }}>
                 <svg
                   className="w-12 h-12 mx-auto"
                   fill="none"
@@ -66,10 +89,10 @@ function App() {
                   />
                 </svg>
               </div>
-              <h2 className="text-lg font-semibold text-gray-100 mb-2">
+              <h2 className="text-lg font-semibold mb-2" style={{ color: '#f4f4f4' }}>
                 Unable to Load Website
               </h2>
-              <p className="text-sm text-gray-400">{error}</p>
+              <p className="text-sm" style={{ color: '#c2c2c2' }}>{error}</p>
             </div>
           </div>
         )}

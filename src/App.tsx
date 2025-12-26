@@ -32,6 +32,12 @@ const apps: AppCard[] = [
     description: 'Summaries and quick answers. (Preview)',
     url: 'https://blank.page/',
   },
+  {
+    id: 'colab',
+    title: 'Google Colab',
+    description: 'Run notebooks in the sidebar (may require sign-in).',
+    url: 'https://colab.research.google.com/',
+  },
 ];
 
 function App() {

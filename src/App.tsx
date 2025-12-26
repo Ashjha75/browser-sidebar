@@ -110,6 +110,10 @@ function App() {
               style={{
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                 alignItems: 'start',
+                justifyItems: 'center',
+                justifyContent: 'center',
+                maxWidth: '1100px',
+                margin: '0 auto',
               }}
             >
               {apps.map((app) => (

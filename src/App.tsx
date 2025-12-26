@@ -69,6 +69,12 @@ function App() {
   };
 
   const handleRunScript = async (script: ScriptCard) => {
+    if (typeof chrome === 'undefined' || !chrome.tabs || !chrome.scripting) {
+      console.warn('Chrome APIs are not available. Are you running in a browser?');
+      alert('Script execution only works when running as a Chrome Extension.');
+      return;
+    }
+
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) return;

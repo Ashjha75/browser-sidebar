@@ -13,9 +13,7 @@ export default defineConfig({
         mkdirSync('dist', { recursive: true });
         copyFileSync('public/manifest.json', 'dist/manifest.json');
         copyFileSync('public/background.js', 'dist/background.js');
-        copyFileSync('public/icon16.svg', 'dist/icon16.svg');
-        copyFileSync('public/icon48.svg', 'dist/icon48.svg');
-        copyFileSync('public/icon128.svg', 'dist/icon128.svg');
+        copyFileSync('public/logo.png', 'dist/logo.png');
       }
     }
   ],

@@ -4,16 +4,16 @@
   "version": "1.0.0",
   "description": "Renders external websites in Chrome's side panel with a dark-themed interface",
   "icons": {
-    "16": "icon16.svg",
-    "48": "icon48.svg",
-    "128": "icon128.svg"
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
   },
   "action": {
     "default_title": "Open My Sidebar",
     "default_icon": {
-      "16": "icon16.svg",
-      "48": "icon48.svg",
-      "128": "icon128.svg"
+      "16": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
     }
   },
   "side_panel": {

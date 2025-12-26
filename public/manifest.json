@@ -19,9 +19,14 @@
     "type": "module"
   },
   "permissions": [
-    "sidePanel"
+    "sidePanel",
+    "cookies",
+    "storage"
   ],
-  "host_permissions": [],
+  "host_permissions": [
+    "https://blank.page/*",
+    "https://*.blank.page/*"
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   }

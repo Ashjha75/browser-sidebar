@@ -34,8 +34,7 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://blank.page/*",
-    "https://*.blank.page/*"
+    "<all_urls>"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"

@@ -79,6 +79,11 @@ function App() {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) return;
 
+      if (tab.url?.startsWith('chrome://') || tab.url?.startsWith('edge://') || tab.url?.startsWith('about:') || tab.url?.startsWith('chrome-extension://')) {
+        alert('Cannot run scripts on this page. Browser security restricts extensions from running on system pages.');
+        return;
+      }
+
       let code = script.code.trim();
       if (code.startsWith('javascript:')) {
         code = code.substring(11);

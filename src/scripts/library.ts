@@ -38,6 +38,7 @@ export const emailExtractorCode = `javascript:(async function () {
       /passcode/i.test(t) ||
       /join the meeting/i.test(t) ||
       /^(from:|to:|cc:|subject:|sent:|when:|location:)/i.test(t) ||
+      // UI Noise
       lower === "reply" ||
       lower === "reply all" ||
       lower === "forward" ||
@@ -48,6 +49,7 @@ export const emailExtractorCode = `javascript:(async function () {
       lower.includes("download all") ||
       lower.includes("retention:") ||
       lower.includes("expires:") ||
+      // Icon artifacts (single non-word characters)
       (t.length === 1 && !/[a-zA-Z0-9]/.test(t))
     );
   };
@@ -67,7 +69,7 @@ export const emailExtractorCode = `javascript:(async function () {
     });
 
     if (loadMoreBtns.length > 0) {
-      console.log("Found " + loadMoreBtns.length + " 'Load More' buttons.");
+        console.log("Found " + loadMoreBtns.length + " 'Load More' buttons.");
         for (const btn of loadMoreBtns) {
             try {
                 btn.click();
@@ -195,13 +197,13 @@ export const emailExtractorCode = `javascript:(async function () {
 
         if (!lines.length) return;
 
-        output += "\n--------------------------------------------------\n";
-        output += "EMAIL " + count++ + "\n";
-        output += "DATE: " + dateTime + "\n";
-        if (toText) output += "TO: " + toText + "\n";
-        if (ccText) output += "CC: " + ccText + "\n";
-        output += "--------------------------------------------------\n";
-        output += lines.join("\n") + "\n";
+        output += "\\n--------------------------------------------------\\n";
+        output += "EMAIL " + count++ + "\\n";
+        output += "DATE: " + dateTime + "\\n";
+        if (toText) output += "TO: " + toText + "\\n";
+        if (ccText) output += "CC: " + ccText + "\\n";
+        output += "--------------------------------------------------\\n";
+        output += lines.join("\\n") + "\\n";
       });
 
       if (!output.trim()) {
@@ -210,10 +212,10 @@ export const emailExtractorCode = `javascript:(async function () {
       }
 
       // Add subject to top of file
-      const finalOutput = "SUBJECT: " + subject + "\n\n" + output;
+      const finalOutput = "SUBJECT: " + subject + "\\n\\n" + output;
 
       // Sanitize filename
-      const safeSubject = subject.replace(/[^a-z0-9\s-_]/gi, '').replace(/\s+/g, '_').substring(0, 100);
+      const safeSubject = subject.replace(/[^a-z0-9\\s-_]/gi, '').replace(/\\s+/g, '_').substring(0, 100);
       const filename = safeSubject ? safeSubject + ".txt" : "email_thread.txt";
 
       save(finalOutput, filename);

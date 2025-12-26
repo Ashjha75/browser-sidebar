@@ -3,20 +3,22 @@ export type ScriptCard = {
   title: string;
   description: string;
   code: string;
+  func?: () => void;
 };
 
-export const emailExtractorCode = `javascript:(async function () {
-
+const emailExtractorFn = async function () {
   /* ---------- helpers ---------- */
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const clickElement = (el) => {
-      el.click();
-      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+  const clickElement = (el: Element) => {
+      if (el instanceof HTMLElement) {
+        el.click();
+        el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+      }
   };
 
-  const save = (data, file) => {
+  const save = (data: string, file: string) => {
     const blob = new Blob([data], { type: "text/plain" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -24,7 +26,7 @@ export const emailExtractorCode = `javascript:(async function () {
     a.click();
   };
 
-  const isNoise = (t) => {
+  const isNoise = (t: string) => {
     const lower = t.toLowerCase();
     return (
       /external sender/i.test(t) ||
@@ -54,7 +56,7 @@ export const emailExtractorCode = `javascript:(async function () {
     );
   };
 
-  const stripEmails = (t) =>
+  const stripEmails = (t: string) =>
     t.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[EMAIL]");
 
   /* ---------- expansion logic ---------- */
@@ -117,10 +119,10 @@ export const emailExtractorCode = `javascript:(async function () {
       // Based on user provided snippet: <div ... role="heading" aria-level="2"> ... <span ... title="Subject">Subject</span>
       const subjectEl = document.querySelector('[role="heading"][aria-level="2"] span[title]');
       if (subjectEl) {
-          subject = subjectEl.getAttribute('title') || subjectEl.innerText;
+          subject = subjectEl.getAttribute('title') || (subjectEl as HTMLElement).innerText;
       } else {
           const heading = document.querySelector('[role="heading"][aria-level="2"]');
-          if (heading) subject = heading.innerText;
+          if (heading) subject = (heading as HTMLElement).innerText;
       }
       subject = subject ? subject.trim() : "email_thread";
 
@@ -129,7 +131,7 @@ export const emailExtractorCode = `javascript:(async function () {
       let count = 1;
 
       // Helper to clean recipient names (remove emails)
-      const cleanRecipients = (text) => {
+      const cleanRecipients = (text: string | null) => {
           if (!text) return "";
           // Remove <email>
           text = text.replace(/<[^>]+>/g, " ");
@@ -144,7 +146,7 @@ export const emailExtractorCode = `javascript:(async function () {
       messages.forEach(msg => {
         // date & time (reliable)
         const timeEl = msg.querySelector('[data-testid="SentReceivedSavedTime"]');
-        const dateTime = timeEl ? timeEl.innerText.trim() : "DATE NOT FOUND";
+        const dateTime = timeEl ? (timeEl as HTMLElement).innerText.trim() : "DATE NOT FOUND";
 
         // To and Cc extraction
         let toText = "";
@@ -152,20 +154,20 @@ export const emailExtractorCode = `javascript:(async function () {
 
         // Strategy 1: Look for aria-label="To" or "Cc" container
         const toEl = msg.querySelector('[aria-label="To"], [aria-label="To:"]');
-        if (toEl) toText = toEl.innerText;
+        if (toEl) toText = (toEl as HTMLElement).innerText;
 
         const ccEl = msg.querySelector('[aria-label="Cc"], [aria-label="Cc:"]');
-        if (ccEl) ccText = ccEl.innerText;
+        if (ccEl) ccText = (ccEl as HTMLElement).innerText;
 
         // Strategy 2: Look for elements with aria-label starting with "To: " or "Cc: "
         // This often captures the full string like "To: Name1; Name2"
         if (!toText) {
              const el = msg.querySelector('[aria-label^="To: "]');
-             if (el) toText = el.getAttribute('aria-label');
+             if (el) toText = el.getAttribute('aria-label') || "";
         }
         if (!ccText) {
              const el = msg.querySelector('[aria-label^="Cc: "]');
-             if (el) ccText = el.getAttribute('aria-label');
+             if (el) ccText = el.getAttribute('aria-label') || "";
         }
 
         toText = cleanRecipients(toText);
@@ -187,7 +189,7 @@ export const emailExtractorCode = `javascript:(async function () {
         let node;
 
         while (node = walker.nextNode()) {
-          let text = node.nodeValue.replace(/\s+/g, " ").trim();
+          let text = node.nodeValue?.replace(/\s+/g, " ").trim();
           if (!text) continue;
           if (isNoise(text)) continue;
 
@@ -197,13 +199,13 @@ export const emailExtractorCode = `javascript:(async function () {
 
         if (!lines.length) return;
 
-        output += "\\n--------------------------------------------------\\n";
-        output += "EMAIL " + count++ + "\\n";
-        output += "DATE: " + dateTime + "\\n";
-        if (toText) output += "TO: " + toText + "\\n";
-        if (ccText) output += "CC: " + ccText + "\\n";
-        output += "--------------------------------------------------\\n";
-        output += lines.join("\\n") + "\\n";
+        output += "\n--------------------------------------------------\n";
+        output += `EMAIL ${count++}\n`;
+        output += `DATE: ${dateTime}\n`;
+        if (toText) output += `TO: ${toText}\n`;
+        if (ccText) output += `CC: ${ccText}\n`;
+        output += "--------------------------------------------------\n";
+        output += lines.join("\n") + "\n";
       });
 
       if (!output.trim()) {
@@ -212,11 +214,11 @@ export const emailExtractorCode = `javascript:(async function () {
       }
 
       // Add subject to top of file
-      const finalOutput = "SUBJECT: " + subject + "\\n\\n" + output;
+      const finalOutput = `SUBJECT: ${subject}\n\n${output}`;
 
       // Sanitize filename
-      const safeSubject = subject.replace(/[^a-z0-9\\s-_]/gi, '').replace(/\\s+/g, '_').substring(0, 100);
-      const filename = safeSubject ? safeSubject + ".txt" : "email_thread.txt";
+      const safeSubject = subject.replace(/[^a-z0-9\s-_]/gi, '').replace(/\s+/g, '_').substring(0, 100);
+      const filename = safeSubject ? `${safeSubject}.txt` : "email_thread.txt";
 
       save(finalOutput, filename);
   }
@@ -229,10 +231,11 @@ export const emailExtractorCode = `javascript:(async function () {
       extractEmails();
   } catch (e) {
       console.error("Script failed:", e);
-      alert("An error occurred: " + e.message);
+      alert("An error occurred: " + (e instanceof Error ? e.message : String(e)));
   }
+};
 
-})();`;
+export const emailExtractorCode = "javascript:(" + emailExtractorFn.toString() + ")()";
 
 export const scriptLibrary: ScriptCard[] = [
   {
@@ -240,5 +243,6 @@ export const scriptLibrary: ScriptCard[] = [
     title: 'Email Extractor',
     description: 'Expand Outlook threads and download the text as a file.',
     code: emailExtractorCode,
+    func: emailExtractorFn,
   },
 ];

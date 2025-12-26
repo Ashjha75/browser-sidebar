@@ -14,6 +14,24 @@ const apps: AppCard[] = [
     description: 'Open a clean writing surface in the sidebar.',
     url: 'https://blank.page/',
   },
+  {
+    id: 'notes',
+    title: 'Notes (coming soon)',
+    description: 'Draft notes and todos in-place. (Preview)',
+    url: 'https://blank.page/',
+  },
+  {
+    id: 'links',
+    title: 'Links Hub (coming soon)',
+    description: 'Save quick links and switch fast. (Preview)',
+    url: 'https://blank.page/',
+  },
+  {
+    id: 'ai',
+    title: 'AI Assist (coming soon)',
+    description: 'Summaries and quick answers. (Preview)',
+    url: 'https://blank.page/',
+  },
 ];
 
 function App() {
@@ -81,32 +99,40 @@ function App() {
       <main className="flex-1 relative overflow-hidden">
         {!selected && (
           <div className="h-full w-full overflow-auto" style={{ backgroundColor: '#303030' }}>
-            <div className="grid grid-cols-1 gap-3 p-3" style={{ minHeight: '100%' }}>
+            <div
+              className="grid grid-cols-1 gap-3 p-3"
+              style={{ minHeight: '100%', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}
+            >
               {apps.map((app) => (
                 <button
                   key={app.id}
                   onClick={() => handleSelect(app)}
-                  className="text-left rounded-xl p-4 transition-all"
+                  className="text-left rounded-xl p-4 transition-all shadow-sm"
                   style={{
                     backgroundColor: '#3a3a3a',
                     border: '1px solid #4a4a4a',
                     color: '#f4f4f4',
+                    boxShadow: '0 8px 20px rgba(0,0,0,0.25)',
                   }}
                 >
-                  <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="text-sm font-semibold" style={{ color: '#f4f4f4' }}>
                       {app.title}
                     </div>
                     <span
                       className="text-xxs px-2 py-1 rounded-full"
-                      style={{ backgroundColor: '#505050', color: '#d7d7d7' }}
+                      style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : '#505050', color: '#0f172a' }}
                     >
-                      Launch
+                      {app.id === 'blank' ? 'Live' : 'Preview'}
                     </span>
                   </div>
-                  <p className="text-xs" style={{ color: '#c2c2c2' }}>
+                  <p className="text-xs mb-3" style={{ color: '#c2c2c2' }}>
                     {app.description}
                   </p>
+                  <div
+                    className="h-1 rounded-full"
+                    style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : '#4f4f4f' }}
+                  ></div>
                 </button>
               ))}
             </div>

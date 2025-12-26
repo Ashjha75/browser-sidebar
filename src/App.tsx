@@ -97,16 +97,24 @@ function App() {
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: (codeToRun) => {
-          const script = document.createElement('script');
-          script.textContent = codeToRun;
-          (document.head || document.documentElement).appendChild(script);
-          script.remove();
+          try {
+            console.log('Sidebar Extension: Injecting script...');
+            // We use eval in the ISOLATED world to bypass page CSP (Content Security Policy)
+            // This works for scripts that only need DOM access.
+            // If a script needs access to page variables (window.X), it won't work here.
+            eval(codeToRun);
+            console.log('Sidebar Extension: Script started.');
+          } catch (e) {
+            console.error('Sidebar Extension: Script failed:', e);
+          }
         },
         args: [code],
-        world: 'MAIN',
       });
+      
+      console.log('Script executed successfully');
     } catch (err) {
       console.error('Script execution failed', err);
+      alert('Script execution failed: ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 

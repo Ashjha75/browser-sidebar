@@ -9,7 +9,12 @@
     "128": "icon128.svg"
   },
   "action": {
-    "default_title": "Open My Sidebar"
+    "default_title": "Open My Sidebar",
+    "default_icon": {
+      "16": "icon16.svg",
+      "48": "icon48.svg",
+      "128": "icon128.svg"
+    }
   },
   "side_panel": {
     "default_path": "index.html"

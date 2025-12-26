@@ -1,19 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-const WEBSITE_URL = 'https://blank.page/';
+type AppCard = {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+};
+
+const apps: AppCard[] = [
+  {
+    id: 'blank',
+    title: 'Blank Page',
+    description: 'Open a clean writing surface in the sidebar.',
+    url: 'https://blank.page/',
+  },
+];
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [selected, setSelected] = useState<AppCard | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Simulate initial load check
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+  const handleSelect = (app: AppCard) => {
+    setSelected(app);
+    setIsLoading(true);
+    setError(null);
+  };
 
-    return () => clearTimeout(timer);
-  }, []);
+  const handleBack = () => {
+    setSelected(null);
+    setError(null);
+    setIsLoading(false);
+  };
 
   const handleIframeLoad = () => {
     setIsLoading(false);
@@ -33,9 +51,18 @@ function App() {
         style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
       >
         <h1 className="text-sm font-medium" style={{ color: '#f4f4f4' }}>
-          Website Sidebar
+          {selected ? selected.title : 'Choose an experience'}
         </h1>
         <div className="flex items-center gap-3">
+          {selected && (
+            <button
+              onClick={handleBack}
+              className="px-3 py-1 rounded-md text-xs"
+              style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
+            >
+              ← Back
+            </button>
+          )}
           <button
             aria-label="Close"
             onClick={() => window.close()}
@@ -52,60 +79,96 @@ function App() {
 
       {/* Main Content */}
       <main className="flex-1 relative overflow-hidden">
-        {/* Loading State */}
-        {isLoading && (
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: '#303030' }}
-          >
-            <div className="text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gray-600 border-r-transparent mb-3"></div>
-              <p className="text-sm" style={{ color: '#c2c2c2' }}>
-                Loading website...
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ backgroundColor: '#303030' }}
-          >
-            <div className="text-center max-w-md px-4">
-              <div className="mb-3" style={{ color: '#f87171' }}>
-                <svg
-                  className="w-12 h-12 mx-auto"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+        {!selected && (
+          <div className="h-full w-full overflow-auto" style={{ backgroundColor: '#303030' }}>
+            <div className="grid grid-cols-1 gap-3 p-3" style={{ minHeight: '100%' }}>
+              {apps.map((app) => (
+                <button
+                  key={app.id}
+                  onClick={() => handleSelect(app)}
+                  className="text-left rounded-xl p-4 transition-all"
+                  style={{
+                    backgroundColor: '#3a3a3a',
+                    border: '1px solid #4a4a4a',
+                    color: '#f4f4f4',
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <h2 className="text-lg font-semibold mb-2" style={{ color: '#f4f4f4' }}>
-                Unable to Load Website
-              </h2>
-              <p className="text-sm" style={{ color: '#c2c2c2' }}>{error}</p>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="text-sm font-semibold" style={{ color: '#f4f4f4' }}>
+                      {app.title}
+                    </div>
+                    <span
+                      className="text-xxs px-2 py-1 rounded-full"
+                      style={{ backgroundColor: '#505050', color: '#d7d7d7' }}
+                    >
+                      Launch
+                    </span>
+                  </div>
+                  <p className="text-xs" style={{ color: '#c2c2c2' }}>
+                    {app.description}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
         )}
 
-        {/* iframe */}
-        <iframe
-          src={WEBSITE_URL}
-          title="External Website"
-          className="w-full h-full border-0"
-          onLoad={handleIframeLoad}
-          onError={handleIframeError}
-          allow="microphone *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
-        />
+        {selected && (
+          <>
+            {isLoading && (
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ backgroundColor: '#303030' }}
+              >
+                <div className="text-center">
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gray-600 border-r-transparent mb-3"></div>
+                  <p className="text-sm" style={{ color: '#c2c2c2' }}>
+                    Loading {selected.title}...
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ backgroundColor: '#303030' }}
+              >
+                <div className="text-center max-w-md px-4">
+                  <div className="mb-3" style={{ color: '#f87171' }}>
+                    <svg
+                      className="w-12 h-12 mx-auto"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 className="text-lg font-semibold mb-2" style={{ color: '#f4f4f4' }}>
+                    Unable to Load {selected.title}
+                  </h2>
+                  <p className="text-sm" style={{ color: '#c2c2c2' }}>{error}</p>
+                </div>
+              </div>
+            )}
+
+            <iframe
+              key={selected.id}
+              src={selected.url}
+              title={selected.title}
+              className="w-full h-full border-0"
+              onLoad={handleIframeLoad}
+              onError={handleIframeError}
+              allow="microphone *; clipboard-read *; clipboard-write *; storage-access *; autoplay *; fullscreen *"
+            />
+          </>
+        )}
       </main>
     </div>
   );

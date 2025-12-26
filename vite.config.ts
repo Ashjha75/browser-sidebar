@@ -1,21 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
-import { copyFileSync, mkdirSync } from 'fs';
+import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
-export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/browser-sidebar/' : '/',
+export default defineConfig({
+  base: '/browser-sidebar/',
   plugins: [
     react(),
     {
       name: 'copy-extension-files',
       closeBundle() {
-        // Only copy extension files in development mode
-        if (mode !== 'production') {
+        // Only copy extension files if manifest exists (development build)
+        if (existsSync('public/manifest.json')) {
           mkdirSync('dist', { recursive: true });
-          copyFileSync('public/manifest.json', 'dist/manifest.json');
-          copyFileSync('public/background.js', 'dist/background.js');
-          copyFileSync('public/logo.png', 'dist/logo.png');
+          try {
+            copyFileSync('public/manifest.json', 'dist/manifest.json');
+            copyFileSync('public/background.js', 'dist/background.js');
+            copyFileSync('public/logo.png', 'dist/logo.png');
+          } catch (e) {
+            // Ignore errors during GitHub Actions build
+          }
         }
       }
     }
@@ -41,4 +44,4 @@ export default defineConfig(({ mode }) => ({
     port: 3000,
     strictPort: false,
   }
-}));
+});

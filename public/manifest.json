@@ -21,7 +21,11 @@
   "permissions": [
     "sidePanel",
     "cookies",
-    "storage"
+    "storage",
+    "clipboardRead",
+    "clipboardWrite",
+    "audioCapture",
+    "videoCapture"
   ],
   "host_permissions": [
     "https://blank.page/*",

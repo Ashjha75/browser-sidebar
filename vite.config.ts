@@ -37,6 +37,7 @@ export default defineConfig({
     minify: 'esbuild'
   },
   // CSP-friendly configuration
+  base: './',
   server: {
     port: 3000,
     strictPort: false,

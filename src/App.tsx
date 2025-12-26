@@ -107,18 +107,26 @@ function App() {
           <div className="h-full w-full overflow-auto" style={{ backgroundColor: '#303030' }}>
             <div
               className="grid grid-cols-1 gap-3 p-3"
-              style={{ minHeight: '100%', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}
+              style={{
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                alignItems: 'start',
+              }}
             >
               {apps.map((app) => (
                 <button
                   key={app.id}
                   onClick={() => handleSelect(app)}
-                  className="text-left rounded-xl p-4 transition-all shadow-sm"
+                  className="text-left rounded-lg p-3 transition-all shadow-sm"
                   style={{
-                    backgroundColor: '#3a3a3a',
-                    border: '1px solid #4a4a4a',
+                    backgroundColor: '#262626',
+                    border: '1px solid #2f2f2f',
                     color: '#f4f4f4',
-                    boxShadow: '0 8px 20px rgba(0,0,0,0.25)',
+                    boxShadow: '0 10px 24px rgba(0,0,0,0.25)',
+                    minHeight: 180,
+                    maxHeight: 320,
+                    maxWidth: 320,
+                    width: '100%',
+                    alignSelf: 'start',
                   }}
                 >
                   <div className="flex items-center justify-between gap-2 mb-3">

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Website Sidebar",
+  "version": "1.0.0",
+  "description": "Renders external websites in Chrome's side panel with a dark-themed interface",
+  "icons": {
+    "16": "icon16.svg",
+    "48": "icon48.svg",
+    "128": "icon128.svg"
+  },
+  "action": {
+    "default_title": "Open Website Sidebar"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "sidePanel"
+  ],
+  "host_permissions": [],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

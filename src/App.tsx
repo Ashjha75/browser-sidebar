@@ -27,6 +27,7 @@ const apps: AppCard[] = [
     type: 'scripts',
     scripts: scriptLibrary,
   },
+  
 ];
 
 function App() {
@@ -104,41 +105,20 @@ function App() {
       {/* Main Content */}
       <main className="flex-1 relative overflow-hidden">
         {!selected && (
-          <div className="h-full w-full overflow-auto" style={{ backgroundColor: '#303030' }}>
-            <div
-              className="grid grid-cols-1 gap-3 p-3"
-              style={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                alignItems: 'start',
-                justifyItems: 'center',
-                justifyContent: 'center',
-                maxWidth: '1100px',
-                margin: '0 auto',
-              }}
-            >
+          <div className="h-full w-full overflow-auto bg-[#303030] p-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 max-w-7xl mx-auto">
               {apps.map((app) => (
                 <button
                   key={app.id}
                   onClick={() => handleSelect(app)}
-                  className="text-left rounded-lg p-3 transition-all shadow-sm"
-                  style={{
-                    backgroundColor: '#262626',
-                    border: '1px solid #2f2f2f',
-                    color: '#f4f4f4',
-                    boxShadow: '0 10px 24px rgba(0,0,0,0.25)',
-                    minHeight: 180,
-                    maxHeight: 320,
-                    maxWidth: 320,
-                    width: '100%',
-                    alignSelf: 'start',
-                  }}
+                  className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full"
                 >
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <div className="text-sm font-semibold" style={{ color: '#f4f4f4' }}>
+                  <div className="flex items-center justify-between w-full mb-3">
+                    <div className="text-base font-semibold text-[#f4f4f4]">
                       {app.title}
                     </div>
                     <span
-                      className="text-xxs px-2 py-1 rounded-full"
+                      className="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
                       style={{
                         backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#505050',
                         color: '#0f172a',
@@ -147,11 +127,11 @@ function App() {
                       {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Preview'}
                     </span>
                   </div>
-                  <p className="text-xs mb-3" style={{ color: '#c2c2c2' }}>
+                  <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
                     {app.description}
                   </p>
                   <div
-                    className="h-1 rounded-full"
+                    className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
                     style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#4f4f4f' }}
                   ></div>
                 </button>

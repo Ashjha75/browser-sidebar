@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
+import { FileText, Edit3,  Code2, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -9,6 +10,8 @@ type AppCard = {
   url?: string;
   type?: 'web' | 'scripts';
   scripts?: ScriptCard[];
+  icon?: LucideIcon;
+  iconColor?: string;
 };
 
 const apps: AppCard[] = [
@@ -18,6 +21,8 @@ const apps: AppCard[] = [
     description: 'Open a clean writing surface in the sidebar.',
     url: 'https://blank.page/',
     type: 'web',
+    icon: FileText,
+    iconColor: '#ffd166',
   },
   {
     id: 'stackedit',
@@ -25,6 +30,8 @@ const apps: AppCard[] = [
     description: 'Markdown editor in the browser.',
     url: 'https://stackedit.io/app#',
     type: 'web',
+    icon: Edit3,
+    iconColor: '#a78bfa',
   },
   
   {
@@ -33,6 +40,8 @@ const apps: AppCard[] = [
     description: 'Quick tools like Email Extractor.',
     type: 'scripts',
     scripts: scriptLibrary,
+    icon: Code2,
+    iconColor: '#7dd3fc',
   },
   
 ];
@@ -141,9 +150,19 @@ function App() {
         className="flex items-center justify-between px-4 py-3 border-b"
         style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
       >
-        <h1 className="text-sm font-medium" style={{ color: '#f4f4f4' }}>
-          {selected ? selected.title : 'My Sidebar'}
-        </h1>
+        <div className="flex items-center gap-2">
+          {selected && selected.url && (
+            <img 
+              src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=64`}
+              alt=""
+              className="w-5 h-5 rounded"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          )}
+          <h1 className="text-sm font-medium" style={{ color: '#f4f4f4' }}>
+            {selected ? selected.title : 'My Sidebar'}
+          </h1>
+        </div>
         <div className="flex items-center gap-3">
           {selected && (
             <button
@@ -173,35 +192,51 @@ function App() {
         {!selected && (
           <div className="h-full w-full overflow-auto bg-[#303030] p-4">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 max-w-7xl mx-auto">
-              {apps.map((app) => (
-                <button
-                  key={app.id}
-                  onClick={() => handleSelect(app)}
-                  className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full"
-                >
-                  <div className="flex items-center justify-between w-full mb-3">
-                    <div className="text-base font-semibold text-[#f4f4f4]">
-                      {app.title}
+              {apps.map((app) => {
+                const Icon = app.icon;
+                return (
+                  <button
+                    key={app.id}
+                    onClick={() => handleSelect(app)}
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full"
+                  >
+                    <div className="flex items-center gap-3 w-full mb-3">
+                      {Icon && (
+                        <div 
+                          className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
+                          style={{ backgroundColor: app.iconColor ? `${app.iconColor}15` : '#3a3a3a' }}
+                        >
+                          <Icon 
+                            className="w-5 h-5" 
+                            style={{ color: app.iconColor || '#f4f4f4' }}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <div className="text-base font-semibold text-[#f4f4f4]">
+                          {app.title}
+                        </div>
+                      </div>
+                      <span
+                        className="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
+                        style={{
+                          backgroundColor: app.iconColor || '#505050',
+                          color: '#0f172a',
+                        }}
+                      >
+                        {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Web'}
+                      </span>
                     </div>
-                    <span
-                      className="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
-                      style={{
-                        backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#505050',
-                        color: '#0f172a',
-                      }}
-                    >
-                      {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Preview'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
-                    {app.description}
-                  </p>
-                  <div
-                    className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
-                    style={{ backgroundColor: app.id === 'blank' ? '#ffd166' : app.type === 'scripts' ? '#7dd3fc' : '#4f4f4f' }}
-                  ></div>
-                </button>
-              ))}
+                    <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
+                      {app.description}
+                    </p>
+                    <div
+                      className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
+                      style={{ backgroundColor: app.iconColor || '#4f4f4f' }}
+                    ></div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

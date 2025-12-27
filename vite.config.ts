@@ -3,8 +3,7 @@ import react from '@vitejs/plugin-react';
 import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
 export default defineConfig({
-    // base: '/browser-sidebar/', // Uncomment and set this for production deployment if needed
-  base: './',
+  base: '/browser-sidebar/',
   plugins: [
     react(),
     {

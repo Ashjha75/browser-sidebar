@@ -19,6 +19,13 @@ const apps: AppCard[] = [
     url: 'https://blank.page/',
     type: 'web',
   },
+  {
+    id: 'stackedit',
+    title: 'StackEdit',
+    description: 'Markdown editor in the browser.',
+    url: 'https://stackedit.io/app#',
+    type: 'web',
+  },
   
   {
     id: 'scripts',

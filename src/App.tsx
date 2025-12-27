@@ -151,11 +151,22 @@ function App() {
         style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
       >
         <div className="flex items-center gap-2">
-          {selected && selected.url && (
+          {selected && selected.icon && (
+            <div 
+              className="flex items-center justify-center w-6 h-6 rounded flex-shrink-0"
+              style={{ backgroundColor: selected.iconColor ? `${selected.iconColor}20` : '#3a3a3a' }}
+            >
+              <selected.icon 
+                className="w-4 h-4" 
+                style={{ color: selected.iconColor || '#f4f4f4' }}
+              />
+            </div>
+          )}
+          {selected && selected.url && !selected.icon && (
             <img 
-              src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=64`}
+              src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=32`}
               alt=""
-              className="w-5 h-5 rounded"
+              className="w-4 h-4 rounded flex-shrink-0"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}

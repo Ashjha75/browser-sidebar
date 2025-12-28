@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
 import { FileText, Edit3, Code2, Database, LucideIcon } from 'lucide-react';
@@ -61,6 +61,50 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [orderedApps, setOrderedApps] = useState<AppCard[]>(apps);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  // Load saved order on mount
+  useEffect(() => {
+    const savedOrder = localStorage.getItem('appCardsOrder');
+    if (savedOrder) {
+      try {
+        const orderIds = JSON.parse(savedOrder);
+        const reordered = orderIds
+          .map((id: string) => apps.find(app => app.id === id))
+          .filter(Boolean) as AppCard[];
+        // Add any new apps that aren't in saved order
+        const newApps = apps.filter(app => !orderIds.includes(app.id));
+        setOrderedApps([...reordered, ...newApps]);
+      } catch (e) {
+        console.error('Failed to load saved order', e);
+      }
+    }
+  }, []);
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newApps = [...orderedApps];
+    const draggedItem = newApps[draggedIndex];
+    newApps.splice(draggedIndex, 1);
+    newApps.splice(index, 0, draggedItem);
+
+    setOrderedApps(newApps);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    // Save order to localStorage
+    const orderIds = orderedApps.map(app => app.id);
+    localStorage.setItem('appCardsOrder', JSON.stringify(orderIds));
+  };
 
   const handleSelect = (app: AppCard) => {
     if (app.openInTab && app.url) {
@@ -217,13 +261,17 @@ function App() {
         {!selected && (
           <div className="h-full w-full overflow-auto bg-[#303030] p-4">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 max-w-7xl mx-auto">
-              {apps.map((app) => {
+              {orderedApps.map((app, index) => {
                 const Icon = app.icon;
                 return (
                   <button
                     key={app.id}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => handleSelect(app)}
-                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full"
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full cursor-move"
                   >
                     <div className="flex items-center gap-3 w-full mb-3">
                       {Icon && (

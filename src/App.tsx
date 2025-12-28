@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon, ExternalLink } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -293,8 +293,11 @@ function App() {
                         </div>
                       )}
                       <div className="flex-1">
-                        <div className="text-base font-semibold text-[#f4f4f4]">
+                        <div className="text-base font-semibold text-[#f4f4f4] flex items-center gap-2">
                           {app.title}
+                          {app.openInTab && (
+                            <ExternalLink className="w-3.5 h-3.5 text-[#a0a0a0]" />
+                          )}
                         </div>
                       </div>
                       <span

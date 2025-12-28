@@ -277,14 +277,10 @@ function App() {
                     onDragStart={(e) => handleDragStart(e, index)}
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragEnd={handleDragEnd}
-                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full relative"
+                    onClick={() => !dragEnabled && handleSelect(app)}
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full relative cursor-pointer"
                   >
-                    <button
-                      onClick={() => handleSelect(app)}
-                      className="absolute inset-0 cursor-pointer"
-                      style={{ zIndex: 1 }}
-                    />
-                    <div className="flex items-center gap-3 w-full mb-3" style={{ position: 'relative', zIndex: 2 }}>
+                    <div className="flex items-center gap-3 w-full mb-3">
                       {Icon && (
                         <div
                           className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
@@ -311,21 +307,27 @@ function App() {
                         {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Web'}
                       </span>
                       <div
-                        onMouseDown={() => setDragEnabled(true)}
-                        onMouseUp={() => setDragEnabled(false)}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          setDragEnabled(true);
+                        }}
+                        onMouseUp={(e) => {
+                          e.stopPropagation();
+                          setDragEnabled(false);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
                         className="ml-2 p-1 rounded hover:bg-[#3a3a3a] cursor-grab active:cursor-grabbing transition-colors"
-                        style={{ zIndex: 10, position: 'relative' }}
                         title="Drag to reorder"
                       >
                         <GripVertical className="w-4 h-4 text-[#808080]" />
                       </div>
                     </div>
-                    <p className="text-sm text-[#c2c2c2] mb-4 flex-1" style={{ position: 'relative', zIndex: 2 }}>
+                    <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
                       {app.description}
                     </p>
                     <div
                       className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
-                      style={{ backgroundColor: app.iconColor || '#4f4f4f', position: 'relative', zIndex: 2 }}
+                      style={{ backgroundColor: app.iconColor || '#4f4f4f' }}
                     ></div>
                   </div>
                 );

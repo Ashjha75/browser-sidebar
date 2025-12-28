@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3,  Code2, LucideIcon } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -12,6 +12,7 @@ type AppCard = {
   scripts?: ScriptCard[];
   icon?: LucideIcon;
   iconColor?: string;
+  openInTab?: boolean;
 };
 
 const apps: AppCard[] = [
@@ -33,7 +34,16 @@ const apps: AppCard[] = [
     icon: Edit3,
     iconColor: '#a78bfa',
   },
-  
+  {
+    id: 'prompts',
+    title: 'Prompts Database',
+    description: 'Access your Notion prompts and projects.',
+    url: 'https://sparkly-mammal-97d.notion.site/Prompts-2d64a691b0bc80e6b71ac5fd8a5c5f73',
+    type: 'web',
+    icon: Database,
+    iconColor: '#f472b6',
+    openInTab: true,
+  },
   {
     id: 'scripts',
     title: 'My Scripts',
@@ -43,7 +53,7 @@ const apps: AppCard[] = [
     icon: Code2,
     iconColor: '#7dd3fc',
   },
-  
+
 ];
 
 function App() {
@@ -51,8 +61,62 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [orderedApps, setOrderedApps] = useState<AppCard[]>(apps);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragEnabled, setDragEnabled] = useState(false);
+
+  // Load saved order on mount
+  useEffect(() => {
+    const savedOrder = localStorage.getItem('appCardsOrder');
+    if (savedOrder) {
+      try {
+        const orderIds = JSON.parse(savedOrder);
+        const reordered = orderIds
+          .map((id: string) => apps.find(app => app.id === id))
+          .filter(Boolean) as AppCard[];
+        // Add any new apps that aren't in saved order
+        const newApps = apps.filter(app => !orderIds.includes(app.id));
+        setOrderedApps([...reordered, ...newApps]);
+      } catch (e) {
+        console.error('Failed to load saved order', e);
+      }
+    }
+  }, []);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (!dragEnabled) {
+      e.preventDefault();
+      return;
+    }
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newApps = [...orderedApps];
+    const draggedItem = newApps[draggedIndex];
+    newApps.splice(draggedIndex, 1);
+    newApps.splice(index, 0, draggedItem);
+
+    setOrderedApps(newApps);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragEnabled(false);
+    // Save order to localStorage
+    const orderIds = orderedApps.map(app => app.id);
+    localStorage.setItem('appCardsOrder', JSON.stringify(orderIds));
+  };
 
   const handleSelect = (app: AppCard) => {
+    if (app.openInTab && app.url) {
+      chrome.tabs.create({ url: app.url });
+      return;
+    }
     setSelected(app);
     setIsLoading(app.type === 'scripts' ? false : true);
     setError(null);
@@ -135,7 +199,7 @@ function App() {
           world: 'ISOLATED',
         });
       }
-      
+
       console.log('Script executed successfully');
     } catch (err) {
       console.error('Script execution failed', err);
@@ -151,11 +215,22 @@ function App() {
         style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
       >
         <div className="flex items-center gap-2">
-          {selected && selected.url && (
-            <img 
-              src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=64`}
+          {selected && selected.icon && (
+            <div
+              className="flex items-center justify-center w-6 h-6 rounded flex-shrink-0"
+              style={{ backgroundColor: selected.iconColor ? `${selected.iconColor}20` : '#3a3a3a' }}
+            >
+              <selected.icon
+                className="w-4 h-4"
+                style={{ color: selected.iconColor || '#f4f4f4' }}
+              />
+            </div>
+          )}
+          {selected && selected.url && !selected.icon && (
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=32`}
               alt=""
-              className="w-5 h-5 rounded"
+              className="w-4 h-4 rounded flex-shrink-0"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           )}
@@ -167,22 +242,23 @@ function App() {
           {selected && (
             <button
               onClick={handleBack}
-              className="px-3 py-1 rounded-md text-xs"
+              className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#4a4a4a] transition-colors"
               style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
+              title="Back"
             >
-              ← Back
+              <ArrowLeft className="w-4 h-4" />
             </button>
           )}
           <button
             aria-label="Close"
             onClick={() => window.close()}
-            className="w-8 h-8 flex items-center justify-center rounded-md"
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#4a4a4a] transition-colors"
             style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
           >
-            ×
+            <X className="w-4 h-4" />
           </button>
           <div className="text-xs" style={{ color: '#b5b5b5' }}>
-            {isLoading ? 'Loading...' : 'Ready'}
+            {isLoading ? 'Loading...' : ''}
           </div>
         </div>
       </header>
@@ -192,22 +268,26 @@ function App() {
         {!selected && (
           <div className="h-full w-full overflow-auto bg-[#303030] p-4">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 max-w-7xl mx-auto">
-              {apps.map((app) => {
+              {orderedApps.map((app, index) => {
                 const Icon = app.icon;
                 return (
-                  <button
+                  <div
                     key={app.id}
-                    onClick={() => handleSelect(app)}
-                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full"
+                    draggable={dragEnabled}
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => !dragEnabled && handleSelect(app)}
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full relative cursor-pointer"
                   >
                     <div className="flex items-center gap-3 w-full mb-3">
                       {Icon && (
-                        <div 
+                        <div
                           className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
                           style={{ backgroundColor: app.iconColor ? `${app.iconColor}15` : '#3a3a3a' }}
                         >
-                          <Icon 
-                            className="w-5 h-5" 
+                          <Icon
+                            className="w-5 h-5"
                             style={{ color: app.iconColor || '#f4f4f4' }}
                           />
                         </div>
@@ -226,6 +306,21 @@ function App() {
                       >
                         {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Web'}
                       </span>
+                      <div
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          setDragEnabled(true);
+                        }}
+                        onMouseUp={(e) => {
+                          e.stopPropagation();
+                          setDragEnabled(false);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="ml-2 p-1 rounded hover:bg-[#3a3a3a] cursor-grab active:cursor-grabbing transition-colors"
+                        title="Drag to reorder"
+                      >
+                        <GripVertical className="w-4 h-4 text-[#808080]" />
+                      </div>
                     </div>
                     <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
                       {app.description}
@@ -234,7 +329,7 @@ function App() {
                       className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
                       style={{ backgroundColor: app.iconColor || '#4f4f4f' }}
                     ></div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3, Code2, Database, GripVertical, LucideIcon } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -242,19 +242,20 @@ function App() {
           {selected && (
             <button
               onClick={handleBack}
-              className="px-3 py-1 rounded-md text-xs"
+              className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#4a4a4a] transition-colors"
               style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
+              title="Back"
             >
-              ← Back
+              <ArrowLeft className="w-4 h-4" />
             </button>
           )}
           <button
             aria-label="Close"
             onClick={() => window.close()}
-            className="w-8 h-8 flex items-center justify-center rounded-md"
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-[#4a4a4a] transition-colors"
             style={{ backgroundColor: '#3c3c3c', color: '#f8f8f8' }}
           >
-            ×
+            <X className="w-4 h-4" />
           </button>
           <div className="text-xs" style={{ color: '#b5b5b5' }}>
             {isLoading ? 'Loading...' : ''}

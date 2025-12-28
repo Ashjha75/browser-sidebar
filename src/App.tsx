@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3,  Code2, LucideIcon } from 'lucide-react';
+import { FileText, Edit3,  Code2, Database, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -33,7 +33,15 @@ const apps: AppCard[] = [
     icon: Edit3,
     iconColor: '#a78bfa',
   },
-  
+  {
+    id: 'prompts',
+    title: 'Prompts Database',
+    description: 'Access your Notion prompts and projects.',
+    url: 'https://sparkly-mammal-97d.notion.site/2d64a691b0bc800b8971f67ae35ef058?v=2d64a691b0bc8095b7c7000cd22ebe7d',
+    type: 'web',
+    icon: Database,
+    iconColor: '#f472b6',
+  },
   {
     id: 'scripts',
     title: 'My Scripts',

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3, Code2, Database, LucideIcon } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, GripVertical, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -63,6 +63,7 @@ function App() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [orderedApps, setOrderedApps] = useState<AppCard[]>(apps);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragEnabled, setDragEnabled] = useState(false);
 
   // Load saved order on mount
   useEffect(() => {
@@ -82,7 +83,11 @@ function App() {
     }
   }, []);
 
-  const handleDragStart = (index: number) => {
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (!dragEnabled) {
+      e.preventDefault();
+      return;
+    }
     setDraggedIndex(index);
   };
 
@@ -101,6 +106,7 @@ function App() {
 
   const handleDragEnd = () => {
     setDraggedIndex(null);
+    setDragEnabled(false);
     // Save order to localStorage
     const orderIds = orderedApps.map(app => app.id);
     localStorage.setItem('appCardsOrder', JSON.stringify(orderIds));
@@ -264,16 +270,20 @@ function App() {
               {orderedApps.map((app, index) => {
                 const Icon = app.icon;
                 return (
-                  <button
+                  <div
                     key={app.id}
-                    draggable
-                    onDragStart={() => handleDragStart(index)}
+                    draggable={dragEnabled}
+                    onDragStart={(e) => handleDragStart(e, index)}
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragEnd={handleDragEnd}
-                    onClick={() => handleSelect(app)}
-                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full cursor-move"
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full relative"
                   >
-                    <div className="flex items-center gap-3 w-full mb-3">
+                    <button
+                      onClick={() => handleSelect(app)}
+                      className="absolute inset-0 cursor-pointer"
+                      style={{ zIndex: 1 }}
+                    />
+                    <div className="flex items-center gap-3 w-full mb-3" style={{ position: 'relative', zIndex: 2 }}>
                       {Icon && (
                         <div
                           className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
@@ -299,15 +309,24 @@ function App() {
                       >
                         {app.id === 'blank' ? 'Live' : app.type === 'scripts' ? 'Tools' : 'Web'}
                       </span>
+                      <div
+                        onMouseDown={() => setDragEnabled(true)}
+                        onMouseUp={() => setDragEnabled(false)}
+                        className="ml-2 p-1 rounded hover:bg-[#3a3a3a] cursor-grab active:cursor-grabbing transition-colors"
+                        style={{ zIndex: 10, position: 'relative' }}
+                        title="Drag to reorder"
+                      >
+                        <GripVertical className="w-4 h-4 text-[#808080]" />
+                      </div>
                     </div>
-                    <p className="text-sm text-[#c2c2c2] mb-4 flex-1">
+                    <p className="text-sm text-[#c2c2c2] mb-4 flex-1" style={{ position: 'relative', zIndex: 2 }}>
                       {app.description}
                     </p>
                     <div
                       className="h-1.5 w-full rounded-full opacity-80 group-hover:opacity-100 transition-opacity"
-                      style={{ backgroundColor: app.iconColor || '#4f4f4f' }}
+                      style={{ backgroundColor: app.iconColor || '#4f4f4f', position: 'relative', zIndex: 2 }}
                     ></div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

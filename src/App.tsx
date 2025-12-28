@@ -257,7 +257,7 @@ function App() {
             ×
           </button>
           <div className="text-xs" style={{ color: '#b5b5b5' }}>
-            {isLoading ? 'Loading...' : 'Ready'}
+            {isLoading ? 'Loading...' : ''}
           </div>
         </div>
       </header>

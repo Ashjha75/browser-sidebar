@@ -37,7 +37,7 @@ const apps: AppCard[] = [
     id: 'prompts',
     title: 'Prompts Database',
     description: 'Access your Notion prompts and projects.',
-    url: 'https://sparkly-mammal-97d.notion.site/ebd//2d64a691b0bc800b8971f67ae35ef058?v=2d64a691b0bc8095b7c7000cd22ebe7d',
+    url: 'https://sparkly-mammal-97d.notion.site/ebd/2d64a691b0bc800b8971f67ae35ef058?v=2d64a691b0bc8095b7c7000cd22ebe7d',
     type: 'web',
     icon: Database,
     iconColor: '#f472b6',

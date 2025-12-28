@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3,  Code2, Database, LucideIcon } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, LucideIcon } from 'lucide-react';
 
 type AppCard = {
   id: string;
@@ -12,6 +12,7 @@ type AppCard = {
   scripts?: ScriptCard[];
   icon?: LucideIcon;
   iconColor?: string;
+  openInTab?: boolean;
 };
 
 const apps: AppCard[] = [
@@ -37,10 +38,11 @@ const apps: AppCard[] = [
     id: 'prompts',
     title: 'Prompts Database',
     description: 'Access your Notion prompts and projects.',
-    url: 'https://sparkly-mammal-97d.notion.site/ebd/2d64a691b0bc800b8971f67ae35ef058?v=2d64a691b0bc8095b7c7000cd22ebe7d',
+    url: 'https://sparkly-mammal-97d.notion.site/Prompts-2d64a691b0bc80e6b71ac5fd8a5c5f73',
     type: 'web',
     icon: Database,
     iconColor: '#f472b6',
+    openInTab: true,
   },
   {
     id: 'scripts',
@@ -51,7 +53,7 @@ const apps: AppCard[] = [
     icon: Code2,
     iconColor: '#7dd3fc',
   },
-  
+
 ];
 
 function App() {
@@ -61,6 +63,10 @@ function App() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleSelect = (app: AppCard) => {
+    if (app.openInTab && app.url) {
+      chrome.tabs.create({ url: app.url });
+      return;
+    }
     setSelected(app);
     setIsLoading(app.type === 'scripts' ? false : true);
     setError(null);
@@ -143,7 +149,7 @@ function App() {
           world: 'ISOLATED',
         });
       }
-      
+
       console.log('Script executed successfully');
     } catch (err) {
       console.error('Script execution failed', err);
@@ -160,18 +166,18 @@ function App() {
       >
         <div className="flex items-center gap-2">
           {selected && selected.icon && (
-            <div 
+            <div
               className="flex items-center justify-center w-6 h-6 rounded flex-shrink-0"
               style={{ backgroundColor: selected.iconColor ? `${selected.iconColor}20` : '#3a3a3a' }}
             >
-              <selected.icon 
-                className="w-4 h-4" 
+              <selected.icon
+                className="w-4 h-4"
                 style={{ color: selected.iconColor || '#f4f4f4' }}
               />
             </div>
           )}
           {selected && selected.url && !selected.icon && (
-            <img 
+            <img
               src={`https://www.google.com/s2/favicons?domain=${new URL(selected.url).hostname}&sz=32`}
               alt=""
               className="w-4 h-4 rounded flex-shrink-0"
@@ -221,12 +227,12 @@ function App() {
                   >
                     <div className="flex items-center gap-3 w-full mb-3">
                       {Icon && (
-                        <div 
+                        <div
                           className="flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
                           style={{ backgroundColor: app.iconColor ? `${app.iconColor}15` : '#3a3a3a' }}
                         >
-                          <Icon 
-                            className="w-5 h-5" 
+                          <Icon
+                            className="w-5 h-5"
                             style={{ color: app.iconColor || '#f4f4f4' }}
                           />
                         </div>

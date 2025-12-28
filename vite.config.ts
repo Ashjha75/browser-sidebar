@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
-export default defineConfig({
-  base: '/browser-sidebar/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'github' ? '/browser-sidebar/' : './',
   plugins: [
     react(),
     {

@@ -64,6 +64,7 @@ function App() {
   const [orderedApps, setOrderedApps] = useState<AppCard[]>(apps);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragEnabled, setDragEnabled] = useState(false);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   // Load saved order on mount
   useEffect(() => {
@@ -89,12 +90,18 @@ function App() {
       return;
     }
     setDraggedIndex(index);
+    // Make the drag image slightly transparent
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = '0.5';
+    }
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
 
+    setDragOverIndex(index);
+    
     const newApps = [...orderedApps];
     const draggedItem = newApps[draggedIndex];
     newApps.splice(draggedIndex, 1);
@@ -104,8 +111,13 @@ function App() {
     setDraggedIndex(index);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Reset opacity
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = '1';
+    }
     setDraggedIndex(null);
+    setDragOverIndex(null);
     setDragEnabled(false);
     // Save order to localStorage
     const orderIds = orderedApps.map(app => app.id);
@@ -270,6 +282,8 @@ function App() {
             <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 max-w-7xl mx-auto">
               {orderedApps.map((app, index) => {
                 const Icon = app.icon;
+                const isDragging = draggedIndex === index;
+                const isDragOver = dragOverIndex === index;
                 return (
                   <div
                     key={app.id}
@@ -278,7 +292,14 @@ function App() {
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragEnd={handleDragEnd}
                     onClick={() => !dragEnabled && handleSelect(app)}
-                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 transition-all duration-200 shadow-lg hover:shadow-xl h-full relative cursor-pointer"
+                    className="group flex flex-col text-left bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-5 shadow-lg hover:shadow-xl h-full relative cursor-pointer"
+                    style={{
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transform: isDragging ? 'scale(1.05) rotate(2deg)' : isDragOver ? 'scale(0.98)' : 'scale(1)',
+                      opacity: isDragging ? 0.5 : 1,
+                      boxShadow: isDragging ? '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' : '',
+                      zIndex: isDragging ? 50 : 'auto',
+                    }}
                   >
                     <div className="flex items-center gap-3 w-full mb-3">
                       {Icon && (

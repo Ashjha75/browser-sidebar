@@ -5,8 +5,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Go up one level from scripts/ to project root
+const projectRoot = path.join(__dirname, '..');
+
 // Load environment variables
-const envPath = path.join(__dirname, '.env');
+const envPath = path.join(projectRoot, '.env');
 let clientId = 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com';
 
 if (fs.existsSync(envPath)) {
@@ -25,7 +28,7 @@ if (fs.existsSync(envPath)) {
 }
 
 // Read the manifest template
-const manifestPath = path.join(__dirname, 'public', 'manifest.json');
+const manifestPath = path.join(projectRoot, 'public', 'manifest.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
 
 // Update the client_id

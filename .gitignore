@@ -1,11 +1,12 @@
 # Dependencies
 node_modules/
+package-lock.json
 
 # Build output
 dist/
 build/
 
-# Environment
+# Environment Variables (NEVER COMMIT THESE)
 .env
 .env.local
 .env.production.local
@@ -16,17 +17,20 @@ build/
 *.pem
 secrets/
 credentials.json
+oauth-token.json
 
-# Editor
+# Editor & IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.DS_Store
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Logs
 logs/
@@ -34,3 +38,13 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary
+*.tmp
+*.temp
+.cache/

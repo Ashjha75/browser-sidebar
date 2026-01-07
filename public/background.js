@@ -12,24 +12,37 @@ let tokenExpiry = null;
 
 // Get OAuth token for Google Drive
 async function getAuthToken(interactive = false) {
+  console.log('🔐 Attempting to get auth token, interactive:', interactive);
+  
   // Check if cached token is still valid
   if (cachedToken && tokenExpiry && Date.now() < tokenExpiry) {
+    console.log('✅ Using cached token');
     return cachedToken;
   }
 
   try {
+    console.log('📡 Calling chrome.identity.getAuthToken...');
     const token = await chrome.identity.getAuthToken({ 
       interactive: interactive 
     });
+    
+    console.log('Token received:', token ? '✅ Success' : '❌ No token');
     
     if (token) {
       cachedToken = token;
       // Tokens typically expire in 1 hour, cache for 50 minutes to be safe
       tokenExpiry = Date.now() + (50 * 60 * 1000);
+      console.log('✅ Token cached successfully');
       return token;
+    } else {
+      throw new Error('No token returned from identity API');
     }
   } catch (error) {
-    console.error('Auth error:', error);
+    console.error('❌ Auth error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 }
@@ -98,12 +111,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     case 'DRIVE_AUTH':
       // Authenticate with Google Drive
+      console.log('🔑 DRIVE_AUTH request received');
       getAuthToken(true)
         .then(token => {
+          console.log('✅ Auth successful, sending response');
           sendResponse({ success: true, token: token });
         })
         .catch(error => {
-          sendResponse({ success: false, error: error.message });
+          console.error('❌ Auth failed:', error);
+          sendResponse({ success: false, error: error.message || 'Authentication failed' });
         });
       return true; // Keep channel open for async response
     

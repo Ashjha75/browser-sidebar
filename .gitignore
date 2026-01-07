@@ -6,6 +6,10 @@ package-lock.json
 dist/
 build/
 
+# Temporary build files
+*.temp.json
+public/manifest.temp.json
+
 # Environment Variables (NEVER COMMIT THESE)
 .env
 .env.local

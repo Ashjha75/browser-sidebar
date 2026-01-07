@@ -9,6 +9,13 @@ build/
 .env
 .env.local
 .env.production.local
+.env.*.local
+
+# Sensitive files (keep .env.example for reference)
+*.key
+*.pem
+secrets/
+credentials.json
 
 # Editor
 .vscode/

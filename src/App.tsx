@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { ScriptsPage } from './components/ScriptsPage';
+import { DrivePage } from './components/DrivePage';
 import { scriptLibrary, type ScriptCard } from './scripts/library';
-import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon, ExternalLink } from 'lucide-react';
+import { FileText, Edit3, Code2, Database, GripVertical, ArrowLeft, X, LucideIcon, ExternalLink, Cloud } from 'lucide-react';
 
 type AppCard = {
   id: string;
   title: string;
   description: string;
   url?: string;
-  type?: 'web' | 'scripts';
+  type?: 'web' | 'scripts' | 'drive';
   scripts?: ScriptCard[];
   icon?: LucideIcon;
   iconColor?: string;
@@ -52,6 +53,14 @@ const apps: AppCard[] = [
     scripts: scriptLibrary,
     icon: Code2,
     iconColor: '#7dd3fc',
+  },
+  {
+    id: 'drive',
+    title: 'Google Drive',
+    description: 'Browse and open your Drive files.',
+    type: 'drive',
+    icon: Cloud,
+    iconColor: '#4285f4',
   },
 
 ];
@@ -369,6 +378,8 @@ function App() {
                 onCopy={copyScript}
                 onRun={handleRunScript}
               />
+            ) : selected.type === 'drive' ? (
+              <DrivePage />
             ) : (
               <>
                 {isLoading && (

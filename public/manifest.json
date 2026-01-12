@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "My Sidebar",
   "version": "1.0.0",
-  "key": "fkokcbmjnfkabgfekdnbbljmmaphlbke",
+  "key": "plmclhhcmhjlknkonmccpgkmngdnimie",
   "description": "Renders external websites in Chrome's side panel with a dark-themed interface",
   "icons": {
     "16": "logo.png",

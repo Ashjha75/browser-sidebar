@@ -134,6 +134,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       return true;
     
+    case 'CLEAR_ALL_TOKENS':
+      // Clear all cached auth tokens
+      chrome.identity.clearAllCachedAuthTokens(() => {
+        cachedToken = null;
+        tokenExpiry = null;
+        console.log('✅ All cached auth tokens cleared');
+        sendResponse({ success: true });
+      });
+      return true;
+    
     case 'DRIVE_FETCH_FILES':
       // Fetch files from Drive
       fetchDriveFiles(message.query || '', message.pageToken || '', message.pageSize || 20)

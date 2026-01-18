@@ -150,10 +150,34 @@ export function DrivePage({}: DrivePageProps) {
     return () => clearTimeout(timer);
   }, [searchQuery, isAuthenticated]);
 
-  // Open file in new tab
-  const handleOpenFile = (file: DriveFile) => {
+  // Open file in new tab with fallbacks
+  const handleOpenFile = async (file: DriveFile) => {
     const url = getFileUrl(file);
-    chrome.tabs.create({ url });
+
+    try {
+      if (chrome && chrome.tabs && chrome.tabs.create) {
+        chrome.tabs.create({ url });
+        return;
+      }
+
+      // Fallback to window.open for non-extension environments
+      window.open(url, '_blank');
+      return;
+    } catch (err) {
+      // Try window.open as a secondary fallback
+      try {
+        window.open(url, '_blank');
+        return;
+      } catch (e) {
+        // Final fallback: copy URL to clipboard and surface an error
+        try {
+          await navigator.clipboard.writeText(url);
+          setError('Could not open link directly — URL copied to clipboard.');
+        } catch (e2) {
+          setError(`Could not open link. Copy this URL: ${url}`);
+        }
+      }
+    }
   };
 
   // Load more files

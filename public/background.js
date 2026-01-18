@@ -50,7 +50,55 @@ async function getAuthToken(interactive = false) {
 // Remove cached token (for logout or token refresh)
 async function removeAuthToken() {
   if (cachedToken) {
-    await chrome.identity.removeCachedAuthToken({ token: cachedToken });
+    console.log('Removing cached token, raw cachedToken:', cachedToken);
+
+    const extractToken = (ct) => {
+      try {
+        if (!ct) return null;
+        if (typeof ct === 'string') return ct;
+        if (typeof ct === 'object') {
+          // Common shapes: { token: '...' } or { access_token: '...' } or nested
+          if (typeof ct.token === 'string') return ct.token;
+          if (typeof ct.access_token === 'string') return ct.access_token;
+          if (typeof ct.accessToken === 'string') return ct.accessToken;
+          // If token is object, try nested fields
+          if (ct.token && typeof ct.token === 'object') {
+            if (typeof ct.token.access_token === 'string') return ct.token.access_token;
+            if (typeof ct.token.token === 'string') return ct.token.token;
+          }
+          // If there's an 'id' or similar
+          if (typeof ct.id === 'string') return ct.id;
+        }
+        // Fallback to string coercion
+        return String(ct);
+      } catch (e) {
+        return null;
+      }
+    };
+
+    const tokenToRemove = extractToken(cachedToken);
+
+    if (!tokenToRemove) {
+      console.warn('Could not extract string token from cachedToken:', cachedToken);
+    } else {
+      // Use callback form wrapped in a Promise to be compatible with MV3
+      await new Promise((resolve) => {
+        try {
+          chrome.identity.removeCachedAuthToken({ token: tokenToRemove }, () => {
+            if (chrome.runtime.lastError) {
+              console.warn('removeCachedAuthToken callback error:', chrome.runtime.lastError);
+            } else {
+              console.log('removeCachedAuthToken succeeded');
+            }
+            resolve();
+          });
+        } catch (err) {
+          console.warn('removeCachedAuthToken threw:', err);
+          resolve();
+        }
+      });
+    }
+
     cachedToken = null;
     tokenExpiry = null;
   }

@@ -154,9 +154,9 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#303030]">
+    <div style={{minHeight:'100vh', background: 'var(--bg-primary)'}}>
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b bg-[#2a2a2a] border-[#3a3a3a]">
+      <header className="saas-card" style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px'}}>
         <div className="flex items-center gap-2">
           {selected && (
             <>
@@ -169,7 +169,7 @@ function App() {
               <h1 className="text-sm font-medium text-[#f4f4f4]">{selected.title}</h1>
             </>
           )}
-          {!selected && <h1 className="text-sm font-medium text-[#f4f4f4]">My Apps</h1>}
+          {!selected && <h1 style={{fontSize:15,fontWeight:600,color:'var(--text-primary)'}}>My Apps</h1>}
         </div>
         <div className="flex items-center gap-3">
           {selected && (
@@ -194,12 +194,12 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-hidden relative">
+      <main style={{padding:18}}>
         {!selected && (
           <div className="h-full overflow-auto p-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold text-[#f4f4f4] mb-6">Select an App</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <h2 style={{fontSize:22,fontWeight:700,color:'var(--text-primary)',marginBottom:18}}>Select an App</h2>
+              <div className="grid">
                 {orderedApps.map((app, index) => {
                   const Icon = app.icon;
                   const isDragging = draggedIndex === index;
@@ -212,7 +212,7 @@ function App() {
                       onDragOver={(e) => handleDragOver(e, index)}
                       onDragEnd={handleDragEnd}
                       onClick={() => !dragEnabled && handleSelect(app)}
-                      className="group flex flex-col bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-xl p-6 cursor-pointer transition-all"
+                      className="saas-card"
                       style={{
                         opacity: isDragging ? 0.5 : 1,
                         transform: isDragging ? 'scale(1.05) rotate(2deg)' : 'scale(1)',
@@ -241,8 +241,8 @@ function App() {
                           <GripVertical className="w-4 h-4 text-[#808080]" />
                         </div>
                       </div>
-                      <h3 className="text-lg font-semibold text-[#f4f4f4] mb-2">{app.title}</h3>
-                      <p className="text-sm text-[#c2c2c2]">{app.description}</p>
+                      <h3 style={{fontSize:16,fontWeight:600,color:'var(--text-primary)',marginBottom:6}}>{app.title}</h3>
+                      <p className="muted" style={{fontSize:13}}>{app.description}</p>
                     </div>
                   );
                 })}

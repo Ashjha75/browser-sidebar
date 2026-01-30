@@ -218,124 +218,92 @@ export function DrivePage({}: DrivePageProps) {
 
   // Authenticated view
   return (
-    <div className="h-full w-full flex flex-col bg-[#303030]">
+    <div style={{height:'100%',width:'100%',display:'flex',flexDirection:'column'}}>
       {/* Search and Actions Bar */}
-      <div className="flex-shrink-0 p-4 bg-[#262626] border-b border-[#404040]">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#a0a0a0]" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search files..."
-              className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#404040] rounded-lg text-sm text-[#f4f4f4] placeholder-[#808080] focus:outline-none focus:border-[#4285f4]"
-            />
-          </div>
-          <button
-            onClick={() => fetchFiles(true)}
-            disabled={loading}
-            className="p-2 bg-[#3c3c3c] hover:bg-[#4a4a4a] text-[#f8f8f8] rounded-lg transition-colors disabled:opacity-50"
-            title="Refresh"
-          >
+      <div className="saas-card" style={{padding:'12px',display:'flex',alignItems:'center',gap:12}}>
+        <div style={{flex:1,display:'flex',alignItems:'center',gap:8}}>
+          <Search className="icon" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search files..."
+            className="input"
+            style={{flex:1}}
+          />
+        </div>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <button onClick={() => fetchFiles(true)} disabled={loading} className="btn btn-secondary" title="Refresh">
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <button
-            onClick={handleLogout}
-            className="p-2 bg-[#3c3c3c] hover:bg-[#4a4a4a] text-[#f8f8f8] rounded-lg transition-colors"
-            title="Sign out"
-          >
+          <button onClick={handleLogout} className="btn btn-ghost" title="Sign out">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
-        
-        {error && (
-          <div className="p-2 bg-red-900/20 border border-red-700/50 rounded text-xs text-red-300">
-            {error}
-          </div>
-        )}
       </div>
 
+      {error && (
+        <div style={{padding:10,marginTop:12}}>
+          <div style={{padding:8,background:'#3b1010',borderRadius:8,color:'#ffb3b3'}}>{error}</div>
+        </div>
+      )}
+
       {/* Files List */}
-      <div className="flex-1 overflow-auto p-4">
+      <div style={{flex:1,overflow:'auto',padding:16}}>
         {loading && files.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <Loader2 className="w-8 h-8 animate-spin text-[#4285f4] mx-auto mb-2" />
-              <p className="text-sm text-[#c2c2c2]">Loading files...</p>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}>
+            <div style={{textAlign:'center'}}>
+              <Loader2 className="w-8 h-8 animate-spin" />
+              <p className="muted" style={{marginTop:8}}>Loading files...</p>
             </div>
           </div>
         ) : files.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center max-w-sm">
-              <File className="w-12 h-12 text-[#808080] mx-auto mb-3" />
-              <p className="text-sm text-[#c2c2c2] mb-1">No files found</p>
-              <p className="text-xs text-[#a0a0a0]">
-                {searchQuery ? 'Try a different search term' : 'Your Drive appears to be empty'}
-              </p>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100%'}}>
+            <div style={{textAlign:'center',maxWidth:320}}>
+              <File className="w-12 h-12 muted" />
+              <p style={{marginTop:8,fontSize:14,fontWeight:600}}>No files found</p>
+              <p className="muted" style={{marginTop:6}}>{searchQuery ? 'Try a different search term' : 'Your Drive appears to be empty'}</p>
             </div>
           </div>
         ) : (
-          <div className="space-y-2 max-w-4xl mx-auto">
+          <div style={{display:'flex',flexDirection:'column',gap:12,maxWidth:900,margin:'0 auto'}}>
             {files.map((file) => {
               const Icon = getFileIcon(file.mimeType);
               return (
-                <div
-                  key={file.id}
-                  onClick={() => handleOpenFile(file)}
-                  className="flex items-center gap-3 p-3 bg-[#262626] border border-[#404040] hover:border-[#606060] hover:bg-[#2a2a2a] rounded-lg cursor-pointer transition-all group"
-                >
-                  {/* Thumbnail or Icon */}
-                  <div className="flex-shrink-0 w-10 h-10 rounded bg-[#1e1e1e] flex items-center justify-center overflow-hidden">
+                <div key={file.id} onClick={() => handleOpenFile(file)} className="saas-card" style={{display:'flex',alignItems:'center',gap:12,cursor:'pointer'}}>
+                  <div style={{flexShrink:0,width:40,height:40,borderRadius:8,background:'#1e1e1e',display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
                     {file.thumbnailLink ? (
-                      <img 
-                        src={file.thumbnailLink} 
-                        alt="" 
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={file.thumbnailLink} alt="" className="w-full h-full object-cover" />
                     ) : file.iconLink ? (
-                      <img 
-                        src={file.iconLink} 
-                        alt="" 
-                        className="w-6 h-6"
-                      />
+                      <img src={file.iconLink} alt="" className="w-6 h-6" />
                     ) : (
-                      <Icon className="w-5 h-5 text-[#a0a0a0]" />
+                      <Icon className="w-5 h-5 muted" />
                     )}
                   </div>
-                  
-                  {/* File Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-[#f4f4f4] truncate">
-                        {file.name}
-                      </p>
-                      <ExternalLink className="w-3 h-3 text-[#808080] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
+                      <p style={{margin:0,fontSize:14,fontWeight:600,color:'var(--text-primary)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{file.name}</p>
+                      <ExternalLink className="icon" />
                     </div>
-                    <p className="text-xs text-[#a0a0a0] mt-0.5">
-                      Modified {formatDate(file.modifiedTime)}
-                    </p>
+                    <p className="muted" style={{marginTop:6,fontSize:12}}>Modified {formatDate(file.modifiedTime)}</p>
                   </div>
                 </div>
               );
             })}
-            
-            {/* Load More Button */}
+
             {hasMore && (
-              <button
-                onClick={handleLoadMore}
-                disabled={loading}
-                className="w-full py-3 px-4 bg-[#262626] hover:bg-[#2a2a2a] border border-[#404040] hover:border-[#606060] text-[#f4f4f4] text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Loading more...
-                  </>
-                ) : (
-                  'Load more'
-                )}
-              </button>
+              <div style={{display:'flex',justifyContent:'center'}}>
+                <button onClick={handleLoadMore} disabled={loading} className="btn btn-secondary">
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span style={{marginLeft:8}}>Loading more...</span>
+                    </>
+                  ) : (
+                    'Load more'
+                  )}
+                </button>
+              </div>
             )}
           </div>
         )}

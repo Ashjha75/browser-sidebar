@@ -268,7 +268,7 @@ function App() {
               title={selected.title}
               style={{width:'100%',height:'100%',border:0,flex:1}}
               onLoad={handleIframeLoad}
-              allow="microphone; camera; clipboard-read; clipboard-write; autoplay; fullscreen"
+              allow="microphone; camera; clipboard-read; clipboard-write; autoplay; fullscreen; geolocation; display-capture"
             />
           </div>
         )}

@@ -31,6 +31,7 @@
     "clipboardRead",
     "clipboardWrite",
     "audioCapture",
+    "videoCapture",
     "scripting",
     "activeTab",
     "identity",
@@ -38,7 +39,9 @@
   ],
   "host_permissions": [
     "<all_urls>",
-    "https://www.googleapis.com/*"
+    "https://www.googleapis.com/*",
+    "https://blank.page/*",
+    "https://*.blank.page/*"
   ],
   "oauth2": {
     "client_id": "767619952612-juk3ocmbajiqpe1mlndednkq0a4fvvig.apps.googleusercontent.com",
@@ -57,7 +60,7 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://blank.page/*"],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "run_at": "document_end"
     }

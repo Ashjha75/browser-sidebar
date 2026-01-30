@@ -13,9 +13,4 @@ async function getUserPermission() {
   }
 }
 
-// Request permission only when explicitly asked (requires user gesture)
-window.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'REQUEST_PERMISSION') {
-    getUserPermission();
-  }
-});
+getUserPermission();

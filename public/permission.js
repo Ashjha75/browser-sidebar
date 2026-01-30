@@ -3,8 +3,8 @@
  */
 async function getUserPermission() {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    console.log('Microphone access granted');
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    console.log('Microphone and camera access granted');
     stream.getTracks().forEach((track) => track.stop());
     window.parent.postMessage({ type: 'PERMISSION_GRANTED' }, '*');
   } catch (error) {

@@ -11,6 +11,8 @@ import {
   CheckCircle2,
   Circle,
   Clock,
+  FileText,
+  Mic,
 } from 'lucide-react';
 import { appwriteService } from '../services/appwrite.service';
 import type { Idea, IdeaStatus } from '../types';
@@ -147,13 +149,27 @@ export function IdeasList({ onCreateNew, onEdit, refreshTrigger }: IdeasListProp
           <h1 className="text-3xl font-bold text-gray-900">My Ideas</h1>
           <p className="text-gray-600 mt-1">Track and manage your creative ideas</p>
         </div>
-        <button
-          onClick={onCreateNew}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg"
-        >
-          <Plus className="w-5 h-5" />
-          New Idea
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Quick Access to Blank Page */}
+          <a
+            href="https://blank.page/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm"
+            title="Open Blank Page with Mic"
+          >
+            <FileText className="w-5 h-5" />
+            <Mic className="w-4 h-4 text-blue-500" />
+            <span className="text-sm font-medium">Blank Page</span>
+          </a>
+          <button
+            onClick={onCreateNew}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            New Idea
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}

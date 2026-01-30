@@ -1,0 +1,78 @@
+/* Design system: Dark SaaS Dashboard (Appwrite-inspired) */
+:root{
+  --bg-primary:#131315;
+  --surface:#1D1D21;
+  --elevated:#3B333A;
+  --text-primary:#C7CBC8;
+  --text-muted:#7A8181;
+  --accent:#F7366C;
+  --radius-md:10px;
+  --radius-lg:12px;
+  --shadow-subtle: 0 6px 20px rgba(11,11,12,0.45);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Layout */
+.dashboard-root{display:flex;height:100vh;gap:24px;padding:24px}
+.saas-sidebar{width:260px;background:linear-gradient(180deg,var(--surface),#19191b);border-radius:var(--radius-lg);padding:18px;display:flex;flex-direction:column;gap:12px}
+.saas-main{flex:1;display:flex;flex-direction:column;gap:18px}
+
+/* Sidebar */
+.brand{display:flex;align-items:center;gap:12px;padding:6px 2px}
+.brand .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,var(--elevated),#6e3a48);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+.brand h1{font-size:16px;margin:0;font-weight:700;color:var(--text-primary)}
+
+.nav{margin-top:6px;display:flex;flex-direction:column;gap:6px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;color:var(--text-primary);text-decoration:none;font-weight:500}
+.nav a .icon{width:18px;height:18px;opacity:0.9}
+.nav a.active{background:var(--elevated);color:white;box-shadow:none}
+.nav a:hover{background:rgba(255,255,255,0.02)}
+
+.sidebar-section{margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.03)}
+
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.saas-card{background:var(--surface);border-radius:var(--radius-md);padding:16px;color:var(--text-primary);box-shadow:none}
+.card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.card-title{font-size:14px;font-weight:600}
+.card-sub{font-size:12px;color:var(--text-muted)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-weight:600;border:0;cursor:pointer}
+.btn-primary{background:linear-gradient(180deg,var(--accent),#e42a58);color:white;box-shadow:0 6px 18px rgba(247,54,108,0.08)}
+.btn-secondary{background:transparent;color:var(--text-primary);border:1px solid rgba(255,255,255,0.03)}
+.btn-ghost{background:transparent;color:var(--text-muted)}
+
+/* Progress */
+.progress{height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff8aa8);border-radius:999px}
+
+/* Forms & Inputs */
+.form-row{display:flex;flex-direction:column;gap:6px}
+.label{font-size:12px;color:var(--text-muted)}
+.input{background:linear-gradient(180deg,#151516,rgba(255,255,255,0.02));border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.02);color:var(--text-primary);outline:none}
+.input::placeholder{color:var(--text-muted)}
+
+/* Badges */
+.badge{display:inline-block;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:600;color:white;background:var(--elevated)}
+.badge.success{background:linear-gradient(180deg,#25b46d,#1f8a58)}
+.badge.warn{background:linear-gradient(180deg,#f5a623,#d67b00)}
+.badge.pulse{background:var(--accent)}
+
+/* Utility */
+.muted{color:var(--text-muted)}
+.flex{display:flex}
+.space-between{justify-content:space-between}
+
+/* Responsive */
+@media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.saas-sidebar{display:none}}

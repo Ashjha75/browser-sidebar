@@ -51,8 +51,15 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["*"],
+      "resources": ["permission.html", "permission.js"],
       "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://blank.page/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
   ]
 }

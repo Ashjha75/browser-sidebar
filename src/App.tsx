@@ -269,7 +269,6 @@ function App() {
               className="w-full h-full border-0"
               onLoad={handleIframeLoad}
               allow="microphone; camera; clipboard-read; clipboard-write; autoplay; fullscreen"
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
             />
           </>
         )}

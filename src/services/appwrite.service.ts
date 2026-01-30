@@ -1,4 +1,4 @@
-import { Client, Account, Databases, ID, Query, Models } from 'appwrite';
+import { Client, Account, Databases, ID, Query } from 'appwrite';
 import { config } from '../config';
 import type { Idea, IdeaStatus } from '../types';
 

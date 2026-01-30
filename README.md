@@ -1,172 +1,204 @@
-# Chrome Sidebar Extension – Website Runner
+# 💡 Idea Tracker - Chrome Extension with Appwrite
 
-A production-grade Chrome extension that renders external websites in the browser's side panel with a dark-themed interface. Now includes **Google Drive browser** integration!
+A powerful Chrome Extension for tracking and managing your creative ideas with authentication and cloud storage powered by Appwrite.
 
-## Features
+## ✨ Features
 
-- ✅ **Chrome Side Panel** integration (Manifest V3)
-- ✅ **Dark Mode** by default
-- ✅ **React** + **Tailwind CSS** for modern UI
-- ✅ **Multiple App Cards** (Blank Page, StackEdit, Notion, Scripts, Google Drive)
-- ✅ **Google Drive Integration** - Browse and open your Drive files
-- ✅ **Script Runner** - Execute custom scripts on any page
-- ✅ **iframe-based** website rendering
-- ✅ **Service Worker** for background operations
-- ✅ **OAuth 2.0** authentication for Google Drive
-- ✅ **CSP-compliant** static build
+- 🔐 **User Authentication** - Secure signup and login with Appwrite
+- 💡 **Idea Management** - Create, edit, delete, and organize your ideas
+- 📊 **Dashboard** - View stats and filter ideas by status
+- 🔍 **Search** - Find ideas by title, description, or tags
+- 🏷️ **Tags** - Organize ideas with custom tags
+- 📈 **Status Tracking** - Planning, In Progress, Completed
+- 🔧 **Scripts** - Built-in collection of useful bookmarklets
+- 🎨 **Beautiful UI** - Modern, responsive design with Tailwind CSS
 
-## Initial Setup
+## 🚀 Quick Start
 
-### 1. Install Dependencies
-```bash
-npm install
-```
+### Prerequisites
 
-### 2. Environment Setup (Required for Google Drive)
+- Node.js 18+
+- Chrome browser
+- Appwrite instance (Cloud or Self-hosted)
 
-**Option A: Interactive Setup (Recommended)**
-```bash
-npm run setup
-```
+### Installation
 
-**Option B: Manual Setup**
-```bash
-# Copy the environment template
-cp .env.example .env
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo>
+   cd extension
+   ```
 
-# Edit .env and add your Google OAuth Client ID
-# See ENV_SETUP.md for detailed instructions
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-📖 **See [ENV_SETUP.md](./ENV_SETUP.md) for complete environment setup guide**  
-📖 **See [DRIVE_SETUP.md](./DRIVE_SETUP.md) for Google Drive OAuth setup**
+3. **Setup Appwrite** (See [APPWRITE_SETUP.md](APPWRITE_SETUP.md) for detailed instructions)
+   - Create Appwrite project
+   - Create database: `ideas-db`
+   - Create collection: `ideas` with required attributes
+   - Enable Email/Password authentication
 
-### 3. Build the Extension
-```bash
-npm run build
-```
+4. **Configure environment**
+   ```bash
+   # Copy and edit .env file
+   cp .env.example .env
+   ```
+   
+   Update `.env` with your Appwrite credentials:
+   ```env
+   VITE_APPWRITE_ENDPOINT=http://localhost/v1
+   VITE_APPWRITE_PROJECT_ID=your_project_id
+   VITE_APPWRITE_DATABASE_ID=ideas-db
+   VITE_APPWRITE_COLLECTION_ID=ideas
+   ```
 
-### 4. Load in Chrome
-- Open Chrome and go to `chrome://extensions/`
-- Enable "Developer mode" (top right)
-- Click "Load unpacked"
-- Select the `dist` folder from this project
+5. **Build the extension**
+   ```bash
+   npm run build
+   ```
 
-## Development
+6. **Load in Chrome**
+   - Open `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the `dist` folder
 
-- **Development mode:**
-  ```bash
-  npm run dev
-  ```
-  Then load the extension from the `dist` folder.
+7. **Update Appwrite Platform**
+   - Copy your Extension ID from Chrome
+   - Add it to Appwrite Console → Settings → Platforms
+   - Hostname: `chrome-extension://YOUR_EXTENSION_ID`
 
-- **Production build:**
-  ```bash
-  npm run build
-  ```
+## 📖 Documentation
 
-## Usage
+- [Complete Appwrite Setup Guide](APPWRITE_SETUP.md) - Detailed step-by-step setup
+- [Quick Setup Summary](QUICK_SETUP.md) - Quick reference guide
 
-1. Click the extension icon in Chrome's toolbar
-2. The side panel will open on the right
-3. The website (`https://blank.page/`) will load in the iframe
-
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 extension/
-├── .env                     # Your secrets (git ignored)
-├── .env.example             # Environment template
-├── .gitignore               # Protects sensitive files
-├── public/
-│   ├── manifest.json        # Chrome extension manifest
-│   └── background.js        # Service worker with OAuth
 ├── src/
-│   ├── App.tsx              # Main React component
-│   ├── main.tsx             # React entry point
-│   ├── index.css            # Tailwind styles
-│   ├── components/
-│   │   ├── ScriptsPage.tsx  # Script runner UI
-│   │   └── DrivePage.tsx    # Google Drive browser
-│   └── scripts/
-│       └── library.ts       # Script collection
-├── scripts/
-│   ├── inject-env.js        # Environment injection
-│   └── setup.js             # Interactive setup
-├── index.html               # HTML entry point
-├── vite.config.ts           # Build configuration
-├── ENV_SETUP.md             # Environment setup guide
-├── DRIVE_SETUP.md           # Google Drive setup guide
-└── README.md
+│   ├── components/          # React components
+│   │   ├── Auth.tsx        # Authentication UI
+│   │   ├── IdeasList.tsx   # Ideas dashboard
+│   │   ├── IdeaForm.tsx    # Create/Edit form
+│   │   └── ScriptsPage.tsx # Scripts collection
+│   ├── services/           # API services
+│   │   └── appwrite.service.ts
+│   ├── types/              # TypeScript types
+│   ├── config/             # Configuration
+│   ├── scripts/            # Bookmarklets library
+│   └── App.tsx            # Main component
+├── public/
+│   ├── manifest.json      # Extension manifest
+│   └── background.js      # Service worker
+├── .env                   # Environment variables
+└── package.json          # Dependencies
 ```
 
-## Architecture
+## 🛠️ Development
 
-### UI Layer (Side Panel)
-- Built with React and Tailwind CSS
-- Renders iframe for external websites
-- Handles loading and error states
-- Dark mode by default
+```bash
+# Start development server
+npm run dev
 
-### Background Layer (Service Worker)
-- Handles privileged operations
-- Opens side panel when icon is clicked
-- Message-based communication with UI
+# Build for production
+npm run build
 
-### Communication
-- UI ↔ Background: Message-based via `chrome.runtime`
-- iframe ↔ UI: Optional via `postMessage` (origin-checked)
-
-## Security
-
-- CSP-compliant (no eval, inline scripts)
-- Respects iframe restrictions
-- Cross-origin isolation respected
-- No DOM access to iframe content
-- **Environment variables** protect sensitive data
-- **Google OAuth** with read-only Drive access
-- **.gitignore** prevents committing secrets
-
-## Environment Variables
-
-This project uses environment variables for sensitive data. See [ENV_SETUP.md](./ENV_SETUP.md).
-
-### Protected Files (Never Committed)
-- `.env` - Your actual secrets
-- `*.key`, `*.pem` - Private keys
-- `credentials.json` - OAuth credentials
-
-### Safe to Commit
-- `.env.example` - Template with placeholders
-- `scripts/inject-env.js` - Build script
-- All source code
-
-## Customization
-
-### Change Website URL
-Edit `src/App.tsx`:
-```typescript
-const WEBSITE_URL = 'https://your-website.com/';
+# Preview build
+npm run preview
 ```
 
-### Modify Theme
-Edit `tailwind.config.js` for custom colors and dark mode settings.
+## 📦 Technologies Used
 
-### Add API Integration
-Use the service worker in `public/background.js` for API calls requiring CORS or authentication.
+- **React** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Appwrite** - Backend (Auth + Database)
+- **Lucide React** - Icons
+- **Chrome Extension Manifest V3** - Extension platform
 
-## Requirements Met
+## 🎯 Appwrite Collection Schema
 
-- ✅ Manifest V3
-- ✅ Chrome Side Panel
-- ✅ React + Tailwind CSS
-- ✅ Dark mode default
-- ✅ Static build output
-- ✅ No server-side runtime
-- ✅ CSP-compliant
-- ✅ iframe with no borders
-- ✅ Service worker for background tasks
+### Collection: `ideas`
 
-## License
+| Field       | Type          | Required | Description                    |
+|-------------|---------------|----------|--------------------------------|
+| title       | String (255)  | Yes      | Idea title                     |
+| description | String (5000) | Yes      | Detailed description           |
+| status      | Enum          | Yes      | Planning/In_Progress/Completed |
+| tags        | String Array  | No       | Custom tags                    |
+| userId      | String (255)  | Yes      | Owner user ID                  |
 
-MIT
+## 🔐 Security
+
+- Email/password authentication with Appwrite
+- Document-level permissions per user
+- Secure session management
+- HTTPS/TLS for cloud deployments
+
+## 🐛 Troubleshooting
+
+### Extension not loading
+- Check that `npm run build` completed successfully
+- Verify all files are in the `dist` folder
+- Check Chrome console for errors
+
+### Authentication errors
+- Verify Appwrite endpoint and project ID in `.env`
+- Ensure extension ID is added to Appwrite platforms
+- Check Appwrite console for auth settings
+
+### Database errors
+- Confirm database and collection IDs match
+- Verify collection attributes are created correctly
+- Check collection permissions
+
+See [APPWRITE_SETUP.md](APPWRITE_SETUP.md) for detailed troubleshooting.
+
+## 📝 Usage
+
+1. **Sign Up / Sign In**
+   - Open the extension
+   - Create account or sign in
+   
+2. **Create Ideas**
+   - Click "New Idea"
+   - Fill in title, description, status, and tags
+   - Click "Create Idea"
+
+3. **Manage Ideas**
+   - View all ideas in the dashboard
+   - Filter by status or search
+   - Edit or delete ideas
+
+4. **Use Scripts**
+   - Switch to Scripts tab
+   - Copy or run bookmarklets
+   - Execute scripts on current page
+
+## 🚧 Removed Features
+
+This version has completely removed all Google Drive integration:
+- ❌ No Google OAuth
+- ❌ No Drive file picker
+- ❌ No Drive permissions
+- ✅ Clean Appwrite-only implementation
+
+## 📄 License
+
+MIT License - feel free to use this project for your own purposes.
+
+## 🙏 Acknowledgments
+
+- [Appwrite](https://appwrite.io) - Backend as a Service
+- [Vite](https://vitejs.dev) - Build tool
+- [Tailwind CSS](https://tailwindcss.com) - CSS framework
+- [Lucide](https://lucide.dev) - Icon library
+
+---
+
+**Made with ❤️ and Appwrite**

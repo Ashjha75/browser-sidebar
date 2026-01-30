@@ -154,7 +154,7 @@ function App() {
   }
 
   return (
-    <div style={{minHeight:'100vh', background: 'var(--bg-primary)'}}>
+    <div style={{display:'flex',flexDirection:'column',minHeight:'100vh',height:'100vh', background: 'var(--bg-primary)'}}>
       {/* Header */}
       <header className="saas-card" style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px'}}>
         <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main style={{padding:18}}>
+      <main style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',padding:selected ? 0 : 18}}>
         {!selected && (
           <div className="h-full overflow-auto p-6">
             <div className="max-w-4xl mx-auto">
@@ -254,23 +254,23 @@ function App() {
         {selected && selected.type === 'drive' && <DrivePage />}
 
         {selected && selected.type === 'blank' && (
-          <>
+          <div style={{position:'relative',flex:1,display:'flex',flexDirection:'column',height:'100%'}}>
             {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#303030]">
-                <div className="text-center">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-3" />
-                  <p className="text-sm text-[#c2c2c2]">Loading {selected.title}...</p>
+              <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg-primary)',zIndex:10}}>
+                <div style={{textAlign:'center'}}>
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" style={{margin:'0 auto 12px'}} />
+                  <p className="muted">Loading {selected.title}...</p>
                 </div>
               </div>
             )}
             <iframe
               src={selected.url}
               title={selected.title}
-              className="w-full h-full border-0"
+              style={{width:'100%',height:'100%',border:0,flex:1}}
               onLoad={handleIframeLoad}
               allow="microphone; camera; clipboard-read; clipboard-write; autoplay; fullscreen"
             />
-          </>
+          </div>
         )}
       </main>
     </div>

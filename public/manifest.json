@@ -32,11 +32,19 @@
     "clipboardWrite",
     "audioCapture",
     "scripting",
-    "activeTab"
+    "activeTab",
+    "identity"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "https://www.googleapis.com/*"
   ],
+  "oauth2": {
+    "client_id": "767619952612-juk3ocmbajiqpe1mlndednkq0a4fvvig.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.readonly"
+    ]
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src https://*"
   }
